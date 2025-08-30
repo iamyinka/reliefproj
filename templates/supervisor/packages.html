@@ -1,0 +1,462 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}Package Management - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Package Management</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#newPackageModal">
+                <i class="bi bi-plus-circle me-1"></i>New Package
+            </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="bulkUpdateStock()">
+                <i class="bi bi-arrow-up-circle me-1"></i>Bulk Stock Update
+            </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-download me-1"></i>Export List
+        </button>
+    </div>
+</div>
+
+<!-- Package Statistics -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card primary">
+            <span class="stat-number">8</span>
+            <h6 class="mb-0">Active Packages</h6>
+            <div class="metric-change positive">
+                <i class="bi bi-arrow-up"></i> 2 added this month
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card success">
+            <span class="stat-number">156</span>
+            <h6 class="mb-0">Total Stock</h6>
+            <div class="metric-change positive">
+                <i class="bi bi-arrow-up"></i> 25 restocked
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card warning">
+            <span class="stat-number">3</span>
+            <h6 class="mb-0">Low Stock Alerts</h6>
+            <div class="metric-change">
+                <i class="bi bi-exclamation-triangle"></i> Needs attention
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card info">
+            <span class="stat-number">1</span>
+            <h6 class="mb-0">Out of Stock</h6>
+            <div class="metric-change negative">
+                <i class="bi bi-arrow-down"></i> Requires restocking
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Quick Actions</h6>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-primary w-100" onclick="quickRestockAll()">
+                            <i class="bi bi-box me-1"></i>Restock All Low Items
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-success w-100" onclick="markAllAvailable()">
+                            <i class="bi bi-check-circle me-1"></i>Mark All Available
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-warning w-100" onclick="generateStockReport()">
+                            <i class="bi bi-graph-up me-1"></i>Stock Report
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-info w-100" onclick="importPackages()">
+                            <i class="bi bi-upload me-1"></i>Import Packages
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Package List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Package Inventory</h6>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="showOnlyActive" checked>
+                            <label class="form-check-label" for="showOnlyActive">Show only active</label>
+                        </div>
+                        <select class="form-select form-select-sm" id="sortPackages" style="width: auto;">
+                            <option value="name">Sort by Name</option>
+                            <option value="stock">Sort by Stock</option>
+                            <option value="family_size">Sort by Family Size</option>
+                            <option value="created">Sort by Created Date</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="packagesContainer">
+                    <!-- Package items will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Package Detail Modal -->
+<div class="modal fade" id="packageDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Package Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="packageDetailContent">
+                    <!-- Details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" id="editPackageBtn">Edit Package</button>
+                <button type="button" class="btn btn-danger" id="deletePackageBtn">Delete Package</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Update Modal -->
+<div class="modal fade" id="stockUpdateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Stock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="currentStock" class="form-label">Current Stock</label>
+                        <input type="number" class="form-control" id="currentStock" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newStock" class="form-label">New Stock Quantity</label>
+                        <input type="number" class="form-control" id="newStock" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="stockReason" class="form-label">Reason for Update</label>
+                        <select class="form-select" id="stockReason">
+                            <option value="restock">Restocking</option>
+                            <option value="adjustment">Inventory Adjustment</option>
+                            <option value="damaged">Damaged Items</option>
+                            <option value="expired">Expired Items</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stockNotes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="stockNotes" rows="2" 
+                                  placeholder="Additional notes about this stock update..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmStockUpdateBtn">Update Stock</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Package Modal -->
+<div class="modal fade" id="editPackageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Package</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label for="editPackageName" class="form-label">Package Name</label>
+                            <input type="text" class="form-control" id="editPackageName">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editCashAmount" class="form-label">Cash Amount (₦)</label>
+                            <input type="number" class="form-control" id="editCashAmount">
+                        </div>
+                        <div class="col-12">
+                            <label for="editPackageItems" class="form-label">Food Items</label>
+                            <textarea class="form-control" id="editPackageItems" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editFamilySize" class="form-label">Target Family Size</label>
+                            <select class="form-select" id="editFamilySize">
+                                <option value="small">Small (1-3)</option>
+                                <option value="medium">Medium (4-6)</option>
+                                <option value="large">Large (7+)</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="senior">Senior Citizen</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editLowStockThreshold" class="form-label">Low Stock Alert</label>
+                            <input type="number" class="form-control" id="editLowStockThreshold" min="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editPackageStatus" class="form-label">Status</label>
+                            <select class="form-select" id="editPackageStatus">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="discontinued">Discontinued</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="editPackageDescription" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="editPackageDescription" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="savePackageChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set page identifier
+    document.body.dataset.page = 'packages';
+    
+    // Initialize package manager if not already done
+    if (!window.packageManager) {
+        window.packageManager = new PackageManager();
+    }
+});
+
+// Quick Actions
+function quickRestockAll() {
+    if (confirm('Restock all low stock items to their default levels?')) {
+        showNotification('All low stock items have been restocked!', 'success');
+        if (window.packageManager) {
+            window.packageManager.loadPackages();
+        }
+    }
+}
+
+function markAllAvailable() {
+    if (confirm('Mark all packages as available?')) {
+        showNotification('All packages marked as available!', 'success');
+    }
+}
+
+function generateStockReport() {
+    showNotification('Generating stock report...', 'info');
+    // Simulate report generation
+    setTimeout(() => {
+        showNotification('Stock report generated successfully!', 'success');
+    }, 2000);
+}
+
+function importPackages() {
+    // Simulate file import
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,.xlsx';
+    input.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            showNotification('Import feature coming soon!', 'info');
+        }
+    };
+    input.click();
+}
+
+function bulkUpdateStock() {
+    showNotification('Bulk stock update feature coming soon!', 'info');
+}
+
+// Stock Management
+function showStockUpdateModal(packageId, currentStock) {
+    const modal = new bootstrap.Modal(document.getElementById('stockUpdateModal'));
+    
+    document.getElementById('currentStock').value = currentStock;
+    document.getElementById('newStock').value = currentStock;
+    document.getElementById('stockReason').value = 'restock';
+    document.getElementById('stockNotes').value = '';
+    
+    document.getElementById('confirmStockUpdateBtn').onclick = function() {
+        const newStock = parseInt(document.getElementById('newStock').value);
+        const reason = document.getElementById('stockReason').value;
+        const notes = document.getElementById('stockNotes').value;
+        
+        if (isNaN(newStock) || newStock < 0) {
+            showNotification('Please enter a valid stock quantity', 'warning');
+            return;
+        }
+        
+        if (window.packageManager) {
+            window.packageManager.updateStock(packageId, newStock);
+        }
+        
+        showNotification(`Stock updated successfully! Reason: ${reason}`, 'success');
+        modal.hide();
+    };
+    
+    modal.show();
+}
+
+// Package Detail Viewing
+function viewPackageDetails(packageId) {
+    // Simulate loading package details
+    const mockPackage = {
+        id: packageId,
+        name: 'Medium Family Basic',
+        items: '10kg Rice, 5kg Beans, 2L Oil, 1kg Salt, 1kg Sugar',
+        cashAmount: 8000,
+        familySize: 'medium',
+        stock: 5,
+        lowStockThreshold: 10,
+        status: 'active',
+        created: '2024-08-15',
+        lastUpdated: '2024-08-30',
+        totalDistributed: 245,
+        description: 'Standard package for medium-sized families'
+    };
+    
+    const modal = new bootstrap.Modal(document.getElementById('packageDetailModal'));
+    const content = document.getElementById('packageDetailContent');
+    
+    content.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Package Information</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>ID:</strong></td><td>${mockPackage.id}</td></tr>
+                    <tr><td><strong>Name:</strong></td><td>${mockPackage.name}</td></tr>
+                    <tr><td><strong>Target Family:</strong></td><td>${mockPackage.familySize}</td></tr>
+                    <tr><td><strong>Status:</strong></td><td><span class="badge bg-success">${mockPackage.status}</span></td></tr>
+                    <tr><td><strong>Created:</strong></td><td>${mockPackage.created}</td></tr>
+                    <tr><td><strong>Last Updated:</strong></td><td>${mockPackage.lastUpdated}</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6>Stock Information</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>Current Stock:</strong></td><td>${mockPackage.stock}</td></tr>
+                    <tr><td><strong>Low Stock Alert:</strong></td><td>${mockPackage.lowStockThreshold}</td></tr>
+                    <tr><td><strong>Total Distributed:</strong></td><td>${mockPackage.totalDistributed}</td></tr>
+                </table>
+                
+                <h6>Package Contents</h6>
+                <p><strong>Food Items:</strong><br>${mockPackage.items}</p>
+                <p><strong>Cash Support:</strong> ₦${mockPackage.cashAmount.toLocaleString()}</p>
+            </div>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6>Description</h6>
+                <p>${mockPackage.description}</p>
+            </div>
+        </div>
+    `;
+    
+    // Set up action buttons
+    document.getElementById('editPackageBtn').onclick = function() {
+        modal.hide();
+        showEditPackageModal(packageId);
+    };
+    
+    document.getElementById('deletePackageBtn').onclick = function() {
+        if (confirm('Are you sure you want to delete this package?')) {
+            if (window.packageManager) {
+                window.packageManager.deletePackage(packageId);
+            }
+            modal.hide();
+        }
+    };
+    
+    modal.show();
+}
+
+function showEditPackageModal(packageId) {
+    const modal = new bootstrap.Modal(document.getElementById('editPackageModal'));
+    
+    // Populate form with current data (mock data)
+    document.getElementById('editPackageName').value = 'Medium Family Basic';
+    document.getElementById('editCashAmount').value = '8000';
+    document.getElementById('editPackageItems').value = '10kg Rice, 5kg Beans, 2L Oil, 1kg Salt, 1kg Sugar';
+    document.getElementById('editFamilySize').value = 'medium';
+    document.getElementById('editLowStockThreshold').value = '10';
+    document.getElementById('editPackageStatus').value = 'active';
+    document.getElementById('editPackageDescription').value = 'Standard package for medium-sized families';
+    
+    document.getElementById('savePackageChangesBtn').onclick = function() {
+        // Validate and save changes
+        const name = document.getElementById('editPackageName').value;
+        const cashAmount = document.getElementById('editCashAmount').value;
+        const items = document.getElementById('editPackageItems').value;
+        
+        if (!name || !cashAmount || !items) {
+            showNotification('Please fill in all required fields', 'warning');
+            return;
+        }
+        
+        showNotification('Package updated successfully!', 'success');
+        modal.hide();
+        
+        if (window.packageManager) {
+            window.packageManager.loadPackages();
+        }
+    };
+    
+    modal.show();
+}
+
+// Event handlers for sorting and filtering
+document.getElementById('sortPackages').addEventListener('change', function() {
+    if (window.packageManager) {
+        // Sorting would be handled by PackageManager
+        showNotification('Packages sorted', 'info');
+    }
+});
+
+document.getElementById('showOnlyActive').addEventListener('change', function() {
+    if (window.packageManager) {
+        // Filter would be handled by PackageManager
+        showNotification(this.checked ? 'Showing only active packages' : 'Showing all packages', 'info');
+    }
+});
+</script>
+{% endblock %}

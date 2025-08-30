@@ -1,0 +1,365 @@
+/* Community Relief - Main Styles */
+
+:root {
+    --primary-color: #195296;
+    --secondary-color: #B6DDEE;
+    --accent-color: #BED000;
+    --light-accent: #A1DAF8;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --bg-light: #f8f9fa;
+    --border-color: #dee2e6;
+}
+
+/* Typography */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: var(--text-primary) !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #134074;
+    border-color: #134074;
+}
+
+/* Hero Section */
+.hero {
+    background: var(--primary-color);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.085;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero .lead {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Package Cards */
+.package-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.package-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.package-card .card-header {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+}
+
+.package-card .card-body {
+    padding: 2rem;
+}
+
+.price-tag {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.package-items {
+    background: var(--bg-light);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.package-items .item {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+
+.package-items .item i {
+    color: var(--accent-color);
+    margin-right: 0.5rem;
+}
+
+.stock-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 3;
+}
+
+/* Form Styles */
+.form-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 2rem;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.step::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.step:first-child::before {
+    left: 50%;
+}
+
+.step:last-child::before {
+    right: 50%;
+}
+
+.step-number {
+    background: var(--border-color);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+.step.active .step-number {
+    background: var(--primary-color);
+}
+
+.step.completed .step-number {
+    background: var(--accent-color);
+}
+
+/* QR Code Display */
+.qr-container {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.qr-code {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 1rem 0;
+    display: inline-block;
+}
+
+/* Status Indicators */
+.status-badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background: #d1edff;
+    color: #0c5aa6;
+}
+
+.status-ready {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-collected {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+/* Statistics Cards */
+.stats-card {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    border: none;
+}
+
+.stats-number {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Filter Section */
+.filter-section {
+    background: var(--bg-light);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-section .form-control,
+.filter-section .form-select {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero .lead {
+        font-size: 1rem;
+    }
+    
+    .package-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Custom Utilities */
+.text-gradient {
+    color: var(--primary-color);
+}
+
+.border-gradient {
+    border: 3px solid var(--primary-color);
+}

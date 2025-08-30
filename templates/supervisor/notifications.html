@@ -1,0 +1,337 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}Notifications - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Notifications</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="markAllAsRead()">
+                <i class="bi bi-check2-all me-1"></i>Mark All as Read
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearNotifications()">
+                <i class="bi bi-trash me-1"></i>Clear All
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Filters -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="notificationFilter" id="filterAllNotifications" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="filterAllNotifications">All (12)</label>
+
+            <input type="radio" class="btn-check" name="notificationFilter" id="filterUnread" autocomplete="off">
+            <label class="btn btn-outline-warning" for="filterUnread">Unread (3)</label>
+
+            <input type="radio" class="btn-check" name="notificationFilter" id="filterApplications" autocomplete="off">
+            <label class="btn btn-outline-info" for="filterApplications">Applications (5)</label>
+
+            <input type="radio" class="btn-check" name="notificationFilter" id="filterStock" autocomplete="off">
+            <label class="btn btn-outline-danger" for="filterStock">Stock Alerts (2)</label>
+
+            <input type="radio" class="btn-check" name="notificationFilter" id="filterSystem" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="filterSystem">System (2)</label>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Recent Notifications</h6>
+            </div>
+            <div class="card-body p-0">
+                
+                <!-- Unread Emergency Application -->
+                <div class="notification-item unread">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon warning">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Emergency Application Received</h6>
+                                    <p class="mb-1">John Doe has submitted an emergency relief application requiring immediate attention.</p>
+                                    <small class="text-muted">5 minutes ago</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-primary" onclick="viewApplication('APP-001')">View</button>
+                                    <button class="btn btn-success" onclick="quickApprove('APP-001')">Quick Approve</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Alert -->
+                <div class="notification-item unread">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon warning">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Low Stock Alert</h6>
+                                    <p class="mb-1">Medium Family Basic package has only 3 units remaining. Consider restocking soon.</p>
+                                    <small class="text-muted">15 minutes ago</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-warning" onclick="updateStock('PKG-002')">Update Stock</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Applications -->
+                <div class="notification-item unread">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon info">
+                            <i class="bi bi-file-text-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">5 New Applications Received</h6>
+                                    <p class="mb-1">You have 5 new relief applications awaiting review in the applications queue.</p>
+                                    <small class="text-muted">1 hour ago</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-primary" onclick="window.location.href='{% url 'supervisor_applications' %}'">Review All</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pickup Reminder -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon success">
+                            <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Today's Pickup Schedule</h6>
+                                    <p class="mb-1">You have 12 pickups scheduled for today between 9:00 AM and 6:00 PM.</p>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-success" onclick="window.location.href='{% url 'supervisor_schedule' %}'">View Schedule</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package Collected -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon success">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Package Successfully Collected</h6>
+                                    <p class="mb-1">Mary Johnson (REF-240830047) has successfully collected her Small Family Basic package.</p>
+                                    <small class="text-muted">3 hours ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Update -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon info">
+                            <i class="bi bi-gear-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">System Update Completed</h6>
+                                    <p class="mb-1">The relief management system has been updated with new features and improvements.</p>
+                                    <small class="text-muted">Yesterday</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Restocked -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon success">
+                            <i class="bi bi-arrow-up-circle-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Stock Restocked</h6>
+                                    <p class="mb-1">Large Family Basic packages have been restocked. 25 new units added to inventory.</p>
+                                    <small class="text-muted">Yesterday</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Report -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon info">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Weekly Report Available</h6>
+                                    <p class="mb-1">Your weekly relief program report is ready for review. 67 families served this week.</p>
+                                    <small class="text-muted">2 days ago</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-info" onclick="window.location.href='{% url 'supervisor_reports' %}'">View Report</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Approved -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon success">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Application Approved</h6>
+                                    <p class="mb-1">Sarah Williams' application for Senior Citizen Special package has been approved and scheduled for pickup.</p>
+                                    <small class="text-muted">3 days ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Response -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon warning">
+                            <i class="bi bi-lightning-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Emergency Response Activated</h6>
+                                    <p class="mb-1">Emergency relief protocol was activated for urgent family situation. Response completed successfully.</p>
+                                    <small class="text-muted">1 week ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Maintenance -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon info">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Scheduled Maintenance Complete</h6>
+                                    <p class="mb-1">System maintenance has been completed. All services are now fully operational.</p>
+                                    <small class="text-muted">1 week ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Summary -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon success">
+                            <i class="bi bi-calendar-month"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">Monthly Impact Summary</h6>
+                                    <p class="mb-1">August 2024: 247 families served, ₦2.8M in relief distributed. Amazing work by the team!</p>
+                                    <small class="text-muted">2 weeks ago</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-success" onclick="window.location.href='{% url 'supervisor_reports' %}'">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function markAllAsRead() {
+    if (confirm('Mark all notifications as read?')) {
+        document.querySelectorAll('.notification-item.unread').forEach(item => {
+            item.classList.remove('unread');
+        });
+        showNotification('All notifications marked as read', 'success');
+    }
+}
+
+function clearNotifications() {
+    if (confirm('Clear all notifications? This action cannot be undone.')) {
+        showNotification('All notifications cleared', 'success');
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }
+}
+
+function viewApplication(appId) {
+    window.location.href = '{% url "supervisor_applications" %}';
+}
+
+function quickApprove(appId) {
+    if (confirm(`Quick approve application ${appId}?`)) {
+        showNotification(`Application ${appId} approved successfully!`, 'success');
+        // Remove the notification from unread
+        event.target.closest('.notification-item').classList.remove('unread');
+    }
+}
+
+function updateStock(packageId) {
+    window.location.href = '{% url "supervisor_packages" %}';
+}
+
+// Filter notifications
+document.querySelectorAll('input[name="notificationFilter"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Filter functionality would be implemented here
+        showNotification(`Filtering by: ${this.nextElementSibling.textContent}`, 'info');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,349 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}Reports & Analytics - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Reports & Analytics</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">This Week</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">This Month</button>
+            <button type="button" class="btn btn-sm btn-primary">This Year</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-success">
+            <i class="bi bi-download me-1"></i>Export Report
+        </button>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-lg-6 mb-4">
+        <div class="metric-box">
+            <span class="metric-value">247</span>
+            <div class="metric-label">Total Applications</div>
+            <div class="metric-change positive">+15% from last month</div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 mb-4">
+        <div class="metric-box">
+            <span class="metric-value">₦2.8M</span>
+            <div class="metric-label">Total Relief Distributed</div>
+            <div class="metric-change positive">+22% from last month</div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 mb-4">
+        <div class="metric-box">
+            <span class="metric-value">94%</span>
+            <div class="metric-label">Approval Rate</div>
+            <div class="metric-change positive">+2% from last month</div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 mb-4">
+        <div class="metric-box">
+            <span class="metric-value">2.3</span>
+            <div class="metric-label">Avg. Processing Days</div>
+            <div class="metric-change negative">-0.5 days improvement</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h6 class="mb-3">Applications Over Time</h6>
+            <canvas id="applicationsChart" height="300"></canvas>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h6 class="mb-3">Package Distribution</h6>
+            <canvas id="packagesChart" height="300"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Analytics -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <h6 class="mb-3">Monthly Trends</h6>
+            <canvas id="trendsChart" height="250"></canvas>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Top Requested Packages</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Medium Family Basic</span>
+                    <div>
+                        <span class="badge bg-primary me-2">45%</span>
+                        <small class="text-muted">112 requests</small>
+                    </div>
+                </div>
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar bg-primary" style="width: 45%"></div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Small Family Basic</span>
+                    <div>
+                        <span class="badge bg-success me-2">32%</span>
+                        <small class="text-muted">79 requests</small>
+                    </div>
+                </div>
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar bg-success" style="width: 32%"></div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Emergency Relief</span>
+                    <div>
+                        <span class="badge bg-danger me-2">12%</span>
+                        <small class="text-muted">30 requests</small>
+                    </div>
+                </div>
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar bg-danger" style="width: 12%"></div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Large Family Basic</span>
+                    <div>
+                        <span class="badge bg-info me-2">8%</span>
+                        <small class="text-muted">20 requests</small>
+                    </div>
+                </div>
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar bg-info" style="width: 8%"></div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Senior Citizen Special</span>
+                    <div>
+                        <span class="badge bg-warning me-2">3%</span>
+                        <small class="text-muted">6 requests</small>
+                    </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-warning" style="width: 3%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Reports -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Detailed Analytics</h6>
+                    <button class="btn btn-sm btn-outline-primary" onclick="generateDetailedReport()">
+                        Generate Full Report
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Application Status Breakdown</h6>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Approved</span>
+                                <span class="text-success fw-bold">232 (94%)</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Pending</span>
+                                <span class="text-warning fw-bold">10 (4%)</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Rejected</span>
+                                <span class="text-danger fw-bold">5 (2%)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <h6>Family Size Distribution</h6>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Small (1-3 members)</span>
+                                <span class="fw-bold">89 families</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Medium (4-6 members)</span>
+                                <span class="fw-bold">125 families</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Large (7+ members)</span>
+                                <span class="fw-bold">33 families</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <h6>Average Processing Time</h6>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Emergency Applications</span>
+                                <span class="fw-bold">0.5 days</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Regular Applications</span>
+                                <span class="fw-bold">2.1 days</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Complex Cases</span>
+                                <span class="fw-bold">4.2 days</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+});
+
+function initializeCharts() {
+    // Applications over time chart
+    const applicationsCtx = document.getElementById('applicationsChart');
+    if (applicationsCtx) {
+        new Chart(applicationsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                datasets: [{
+                    label: 'Applications Submitted',
+                    data: [45, 52, 38, 67, 73, 89, 95, 108],
+                    borderColor: 'rgb(25, 82, 150)',
+                    backgroundColor: 'rgba(25, 82, 150, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Applications Approved',
+                    data: [42, 48, 35, 63, 69, 84, 89, 102],
+                    borderColor: 'rgb(190, 208, 0)',
+                    backgroundColor: 'rgba(190, 208, 0, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    // Package distribution chart
+    const packagesCtx = document.getElementById('packagesChart');
+    if (packagesCtx) {
+        new Chart(packagesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Medium Family', 'Small Family', 'Emergency', 'Large Family', 'Senior Citizen'],
+                datasets: [{
+                    data: [45, 32, 12, 8, 3],
+                    backgroundColor: [
+                        'rgb(25, 82, 150)',
+                        'rgb(182, 221, 238)', 
+                        'rgb(220, 53, 69)',
+                        'rgb(190, 208, 0)',
+                        'rgb(161, 218, 248)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+    
+    // Monthly trends chart
+    const trendsCtx = document.getElementById('trendsChart');
+    if (trendsCtx) {
+        new Chart(trendsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                datasets: [{
+                    label: 'Cash Distributed (₦000)',
+                    data: [180, 220, 165, 290, 315, 380, 420, 475],
+                    backgroundColor: 'rgba(25, 82, 150, 0.8)',
+                    borderColor: 'rgb(25, 82, 150)',
+                    borderWidth: 1
+                }, {
+                    label: 'Food Packages',
+                    data: [42, 48, 35, 63, 69, 84, 89, 102],
+                    backgroundColor: 'rgba(190, 208, 0, 0.8)',
+                    borderColor: 'rgb(190, 208, 0)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+}
+
+function generateDetailedReport() {
+    showNotification('Generating detailed report...', 'info');
+    // Simulate report generation
+    setTimeout(() => {
+        showNotification('Detailed report generated successfully!', 'success');
+    }, 2000);
+}
+</script>
+{% endblock %}

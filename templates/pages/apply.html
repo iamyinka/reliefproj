@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Apply for Relief - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold text-gradient mb-3">Apply for Relief Package</h1>
+                <p class="lead text-muted">
+                    Complete this simple application to request support from our community relief program. 
+                    We're here to help during your time of need.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Application Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                <!-- Step Indicator -->
+                <div class="step-indicator mb-5">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <small class="mt-2 d-block">Personal Info</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <small class="mt-2 d-block">Family Details</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <small class="mt-2 d-block">Package Selection</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <small class="mt-2 d-block">Pickup Schedule</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <small class="mt-2 d-block">Confirmation</small>
+                    </div>
+                </div>
+
+                <!-- Application Form -->
+                <div class="form-container">
+                    <form id="application-form" method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Step 1: Personal Information -->
+                        <div class="form-step active">
+                            <h4 class="mb-4">Personal Information</h4>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    <div class="invalid-feedback">Please provide your first name.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    <div class="invalid-feedback">Please provide your last name.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" 
+                                           placeholder="080XXXXXXXX" required>
+                                    <div class="invalid-feedback">Please provide a valid Nigerian phone number.</div>
+                                    <small class="form-text text-muted">We'll use this to contact you about your application.</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address (Optional)</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                                <div class="col-12">
+                                    <label for="address" class="form-label">Home Address *</label>
+                                    <textarea class="form-control" id="address" name="address" rows="3" 
+                                              placeholder="Please provide your full home address" required></textarea>
+                                    <div class="invalid-feedback">Please provide your complete address.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Family Details -->
+                        <div class="form-step">
+                            <h4 class="mb-4">Family Details</h4>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="family_size" class="form-label">Total Family Members *</label>
+                                    <select class="form-select" id="family_size" name="family_size" required>
+                                        <option value="">Select family size</option>
+                                        <option value="1">1 person</option>
+                                        <option value="2">2 people</option>
+                                        <option value="3">3 people</option>
+                                        <option value="4">4 people</option>
+                                        <option value="5">5 people</option>
+                                        <option value="6">6 people</option>
+                                        <option value="7">7 people</option>
+                                        <option value="8">8 people</option>
+                                        <option value="9">9 people</option>
+                                        <option value="10+">10+ people</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select your family size.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="children_count" class="form-label">Number of Children (Under 18)</label>
+                                    <select class="form-select" id="children_count" name="children_count">
+                                        <option value="0">No children</option>
+                                        <option value="1">1 child</option>
+                                        <option value="2">2 children</option>
+                                        <option value="3">3 children</option>
+                                        <option value="4">4 children</option>
+                                        <option value="5+">5+ children</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="elderly_count" class="form-label">Number of Elderly (60+)</label>
+                                    <select class="form-select" id="elderly_count" name="elderly_count">
+                                        <option value="0">No elderly members</option>
+                                        <option value="1">1 elderly member</option>
+                                        <option value="2">2 elderly members</option>
+                                        <option value="3+">3+ elderly members</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="employment_status" class="form-label">Employment Status *</label>
+                                    <select class="form-select" id="employment_status" name="employment_status" required>
+                                        <option value="">Select status</option>
+                                        <option value="unemployed">Unemployed</option>
+                                        <option value="part_time">Part-time employment</option>
+                                        <option value="full_time">Full-time employment</option>
+                                        <option value="self_employed">Self-employed</option>
+                                        <option value="retired">Retired</option>
+                                        <option value="student">Student</option>
+                                        <option value="disabled">Unable to work</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select your employment status.</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="special_needs" class="form-label">Special Dietary Needs or Medical Conditions</label>
+                                    <textarea class="form-control" id="special_needs" name="special_needs" rows="3"
+                                              placeholder="Please mention any allergies, medical conditions, or special dietary requirements"></textarea>
+                                    <small class="form-text text-muted">This helps us provide appropriate support.</small>
+                                </div>
+                                <div class="col-12">
+                                    <label for="situation_description" class="form-label">Brief Description of Current Situation *</label>
+                                    <textarea class="form-control" id="situation_description" name="situation_description" rows="4"
+                                              placeholder="Please briefly explain your current circumstances and why you need support" required></textarea>
+                                    <div class="invalid-feedback">Please describe your current situation.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Package Selection -->
+                        <div class="form-step">
+                            <h4 class="mb-4">Choose Your Relief Package</h4>
+                            
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div id="recommended-packages" class="alert alert-info">
+                                        <i class="bi bi-lightbulb me-2"></i>
+                                        <strong>Recommended for you:</strong> Based on your family size, we suggest the following packages.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <!-- Package options will be populated based on family size -->
+                                <div class="col-lg-6">
+                                    <div class="card package-option">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="selected_package" 
+                                                       id="small_basic" value="small_basic" required>
+                                                <label class="form-check-label w-100" for="small_basic">
+                                                    <h6>Small Family Basic - ₦5,000</h6>
+                                                    <small class="text-muted">5kg Rice, 2kg Beans, 1L Oil + Cash</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card package-option">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="selected_package" 
+                                                       id="medium_basic" value="medium_basic">
+                                                <label class="form-check-label w-100" for="medium_basic">
+                                                    <h6>Medium Family Basic - ₦8,000</h6>
+                                                    <small class="text-muted">10kg Rice, 5kg Beans, 2L Oil + Cash</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card package-option">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="selected_package" 
+                                                       id="emergency" value="emergency">
+                                                <label class="form-check-label w-100" for="emergency">
+                                                    <h6>Emergency Relief - ₦10,000</h6>
+                                                    <small class="text-muted text-danger">Fast-tracked for urgent situations</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card package-option">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="selected_package" 
+                                                       id="senior" value="senior">
+                                                <label class="form-check-label w-100" for="senior">
+                                                    <h6>Senior Citizen Special - ₦6,000</h6>
+                                                    <small class="text-muted text-success">Includes delivery service</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="package_flexibility" name="package_flexibility">
+                                    <label class="form-check-label" for="package_flexibility">
+                                        I'm flexible with package selection if my preferred choice is unavailable
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Pickup Schedule -->
+                        <div class="form-step">
+                            <h4 class="mb-4">Schedule Your Pickup</h4>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="preferred_date" class="form-label">Preferred Pickup Date *</label>
+                                    <input type="date" class="form-control" id="preferred_date" name="preferred_date" 
+                                           min="" required>
+                                    <div class="invalid-feedback">Please select your preferred pickup date.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="preferred_time" class="form-label">Preferred Time Slot *</label>
+                                    <select class="form-select" id="preferred_time" name="preferred_time" required>
+                                        <option value="">Select time slot</option>
+                                        <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                                        <option value="afternoon">Afternoon (12:00 PM - 3:00 PM)</option>
+                                        <option value="evening">Evening (3:00 PM - 6:00 PM)</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select your preferred time slot.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="alternative_date" class="form-label">Alternative Date (Optional)</label>
+                                    <input type="date" class="form-control" id="alternative_date" name="alternative_date" min="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="alternative_time" class="form-label">Alternative Time Slot</label>
+                                    <select class="form-select" id="alternative_time" name="alternative_time">
+                                        <option value="">Select alternative time</option>
+                                        <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                                        <option value="afternoon">Afternoon (12:00 PM - 3:00 PM)</option>
+                                        <option value="evening">Evening (3:00 PM - 6:00 PM)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        <strong>Pickup Location:</strong> Community Center, 123 Care Street, Lagos<br>
+                                        <strong>Contact:</strong> +234 812 345 6789 (Mrs. Sarah Johnson)
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="transportation_needs" class="form-label">Transportation Assistance Needed?</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="transportation_help" name="transportation_help">
+                                        <label class="form-check-label" for="transportation_help">
+                                            I need assistance with transportation to the pickup location
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="delivery_request" name="delivery_request">
+                                        <label class="form-check-label" for="delivery_request">
+                                            I would prefer home delivery (additional verification required)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Confirmation -->
+                        <div class="form-step">
+                            <h4 class="mb-4">Review & Submit Application</h4>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Application Summary</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="application-summary">
+                                        <!-- Summary will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terms_agreement" name="terms_agreement" required>
+                                    <label class="form-check-label" for="terms_agreement">
+                                        I confirm that the information provided is accurate and I understand that:
+                                    </label>
+                                    <div class="invalid-feedback">You must agree to the terms to submit your application.</div>
+                                </div>
+                                <ul class="small text-muted mt-2">
+                                    <li>I can only apply once every 21 days</li>
+                                    <li>Applications are reviewed and approved based on availability</li>
+                                    <li>I will receive an SMS/email with pickup details if approved</li>
+                                    <li>I must present a valid QR code during pickup</li>
+                                    <li>This support is provided by the community care program</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="alert alert-success mt-4">
+                                <i class="bi bi-shield-check me-2"></i>
+                                Your information is secure and will only be used for this relief program.
+                            </div>
+                        </div>
+
+                        <!-- Form Navigation -->
+                        <div class="d-flex justify-content-between mt-5">
+                            <button type="button" class="btn btn-outline-secondary prev-btn" style="display: none;">
+                                <i class="bi bi-arrow-left me-2"></i>Previous
+                            </button>
+                            <div class="ms-auto">
+                                <button type="button" class="btn btn-primary next-btn">
+                                    Next <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                                <button type="submit" class="btn btn-success submit-btn" style="display: none;">
+                                    <i class="bi bi-check-circle me-2"></i>Submit Application
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Support Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h4 class="fw-bold mb-3">Need Help with Your Application?</h4>
+                <p class="text-muted mb-4">
+                    If you have questions or need assistance completing this form, our support team is here to help.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="tel:+2348123456789" class="btn btn-primary">
+                        <i class="bi bi-telephone me-2"></i>Call Support
+                    </a>
+                    <a href="mailto:support@ourgcrelief.com" class="btn btn-outline-primary">
+                        <i class="bi bi-envelope me-2"></i>Email Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Set minimum date to tomorrow
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const dateInputs = document.querySelectorAll('input[type="date"]');
+    dateInputs.forEach(input => {
+        input.min = tomorrow.toISOString().split('T')[0];
+    });
+    
+    // Initialize form
+    const form = new window.CommunityRelief.MultiStepForm('#application-form');
+});
+
+// Update package recommendations based on family size
+document.getElementById('family_size').addEventListener('change', function() {
+    const familySize = parseInt(this.value);
+    const recommendedDiv = document.getElementById('recommended-packages');
+    
+    let recommendation = '';
+    if (familySize <= 3) {
+        recommendation = 'Based on your family size, we recommend the <strong>Small Family Basic</strong> or <strong>Small Family Premium</strong> packages.';
+    } else if (familySize <= 6) {
+        recommendation = 'Based on your family size, we recommend the <strong>Medium Family Basic</strong> or <strong>Medium Family Premium</strong> packages.';
+    } else {
+        recommendation = 'Based on your family size, we recommend the <strong>Large Family Basic</strong> or <strong>Large Family Premium</strong> packages.';
+    }
+    
+    recommendedDiv.innerHTML = `
+        <i class="bi bi-lightbulb me-2"></i>
+        <strong>Recommended for you:</strong> ${recommendation}
+    `;
+});
+
+// Phone number validation
+document.getElementById('phone').addEventListener('input', function() {
+    const phone = this.value;
+    if (phone && !window.CommunityRelief.validatePhone(phone)) {
+        this.setCustomValidity('Please enter a valid Nigerian phone number (e.g., 08012345678)');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+</script>
+{% endblock %}

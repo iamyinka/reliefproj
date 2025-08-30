@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pickup Details - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="text-white py-5" style="background: var(--primary-color);">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Package Pickup Details</h1>
+                <p class="lead">
+                    Your relief package is ready for collection. Please review the details below 
+                    and follow the pickup instructions.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Pickup Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                <!-- Status Alert -->
+                <div class="alert alert-success d-flex align-items-center mb-5">
+                    <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+                    <div>
+                        <h5 class="alert-heading mb-1">Package Ready for Collection</h5>
+                        <p class="mb-0">Your application has been approved and your relief package is waiting for you.</p>
+                    </div>
+                </div>
+
+                <!-- QR Code Section -->
+                <div class="card border-0 shadow-lg mb-5">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">
+                            <i class="bi bi-qr-code me-2"></i>Your Collection QR Code
+                        </h4>
+                    </div>
+                    <div class="card-body text-center py-5">
+                        <div class="qr-container d-inline-block">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=RELIEF-APP-QR123456789&bgcolor=f8f9fa" 
+                                 alt="Pickup QR Code" class="img-fluid mb-3">
+                            <div class="mt-3">
+                                <h5 class="text-primary">REF-240915001</h5>
+                                <p class="text-muted">Present this QR code at pickup</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-primary w-100" onclick="downloadQR()">
+                                    <i class="bi bi-download me-2"></i>Download QR Code
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-secondary w-100" onclick="printQR()">
+                                    <i class="bi bi-printer me-2"></i>Print QR Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Package Details -->
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-box-seam me-2"></i>Package Contents
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="text-primary">Medium Family Basic Package</h6>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        <strong>10kg Rice</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        <strong>5kg Beans</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        <strong>2L Vegetable Oil</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        <strong>1kg Salt & 1kg Sugar</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-cash text-success me-2"></i>
+                                        <strong>₦8,000 Cash Support</strong>
+                                    </li>
+                                </ul>
+                                <div class="bg-light p-3 rounded mt-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Package value: ₦8,000 (food) + ₦8,000 (cash) = <strong>₦16,000</strong>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-calendar-check me-2"></i>Pickup Schedule
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Scheduled Date & Time</h6>
+                                    <p class="text-muted mb-1">
+                                        <i class="bi bi-calendar3 me-2"></i>Saturday, September 15, 2024
+                                    </p>
+                                    <p class="text-muted">
+                                        <i class="bi bi-clock me-2"></i>10:00 AM - 12:00 PM
+                                    </p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h6>Alternative Time</h6>
+                                    <p class="text-muted">
+                                        <i class="bi bi-calendar-plus me-2"></i>Sunday, September 16, 2024
+                                        <br><i class="bi bi-clock me-2"></i>2:00 PM - 4:00 PM
+                                    </p>
+                                </div>
+                                
+                                <div class="bg-warning bg-opacity-10 p-3 rounded">
+                                    <small class="text-dark">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        <strong>Important:</strong> Please arrive within your scheduled time slot. 
+                                        Contact us if you cannot make it.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location & Contact -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-geo-alt me-2"></i>Pickup Location & Contact
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Location Details</h6>
+                                <address class="text-muted">
+                                    <strong>Community Care Center</strong><br>
+                                    123 Care Street, Ikeja<br>
+                                    Lagos State, Nigeria<br>
+                                </address>
+                                
+                                <div class="mb-3">
+                                    <a href="https://maps.google.com/?q=Community+Care+Center+Ikeja+Lagos" 
+                                       target="_blank" class="btn btn-outline-primary">
+                                        <i class="bi bi-map me-2"></i>View on Google Maps
+                                    </a>
+                                </div>
+                                
+                                <div class="bg-light p-3 rounded">
+                                    <h6 class="small">Landmarks:</h6>
+                                    <ul class="small text-muted mb-0">
+                                        <li>Opposite First Bank, Ikeja</li>
+                                        <li>Near Allen Junction Bus Stop</li>
+                                        <li>White building with red roof</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Contact Person</h6>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary rounded-circle p-3 me-3">
+                                        <i class="bi bi-person-fill text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Mrs. Sarah Johnson</h6>
+                                        <small class="text-muted">Care Coordinator</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <i class="bi bi-telephone text-primary me-2"></i>
+                                    <a href="tel:+2348123456789" class="text-decoration-none">+234 812 345 6789</a>
+                                </div>
+                                <div class="mb-3">
+                                    <i class="bi bi-envelope text-primary me-2"></i>
+                                    <a href="mailto:sarah.johnson@ourgcrelief.com" class="text-decoration-none">sarah.johnson@ourgcrelief.com</a>
+                                </div>
+                                
+                                <div class="bg-info bg-opacity-10 p-3 rounded">
+                                    <small class="text-dark">
+                                        <i class="bi bi-chat-dots me-1"></i>
+                                        Available for calls: 8:00 AM - 6:00 PM daily
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pickup Instructions -->
+                <div class="card mt-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-check me-2"></i>Pickup Instructions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>What to Bring:</h6>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item px-0">
+                                        <i class="bi bi-qr-code text-primary me-2"></i>
+                                        Your QR code (on phone or printed)
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        <i class="bi bi-person-badge text-primary me-2"></i>
+                                        Valid government-issued ID
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        <i class="bi bi-bag text-primary me-2"></i>
+                                        Bags or containers for food items
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        <i class="bi bi-car-front text-primary me-2"></i>
+                                        Transportation for items (if needed)
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Pickup Process:</h6>
+                                <ol class="list-group list-group-numbered list-group-flush">
+                                    <li class="list-group-item px-0">
+                                        Arrive at the pickup location during your time slot
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Present your QR code and ID to the staff
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Staff will scan your QR code for verification
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Collect your food items and cash support
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Sign the collection receipt
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important Notes -->
+                <div class="alert alert-info mt-4">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-info-circle me-2"></i>Important Notes
+                    </h6>
+                    <ul class="mb-0">
+                        <li><strong>One-time use:</strong> QR code becomes invalid after collection</li>
+                        <li><strong>ID verification:</strong> Names on ID must match application details</li>
+                        <li><strong>Proxy collection:</strong> Inform us if someone else will collect on your behalf</li>
+                        <li><strong>Next application:</strong> You can reapply 21 days after today's collection</li>
+                        <li><strong>Feedback:</strong> We appreciate your feedback about our service</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-5">
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="tel:+2348123456789" class="btn btn-success btn-lg">
+                            <i class="bi bi-telephone me-2"></i>Call Pickup Location
+                        </a>
+                        <button class="btn btn-primary btn-lg" onclick="sharePickupDetails()">
+                            <i class="bi bi-share me-2"></i>Share Details
+                        </button>
+                        <a href="{% url 'status' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Status
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Emergency Contact -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white text-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Emergency or Issues?
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="text-muted mb-4">
+                            If you're unable to make your pickup time, have emergency situations, 
+                            or encounter any issues, please contact us immediately.
+                        </p>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <a href="tel:+2348123456789" class="btn btn-danger w-100">
+                                    <i class="bi bi-telephone-fill me-2"></i>
+                                    Emergency Call
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="sms:+2348123456789" class="btn btn-warning w-100">
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    Send SMS
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="mailto:emergency@ourgcrelief.com" class="btn btn-info w-100">
+                                    <i class="bi bi-envelope-fill me-2"></i>
+                                    Email Support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Thank You Section -->
+<section class="py-5 text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <i class="bi bi-heart-fill text-primary display-4 mb-3"></i>
+                <h3 class="fw-bold mb-3">Thank You for Trusting Us</h3>
+                <p class="lead text-muted mb-4">
+                    We're honored to be part of your support system during this time. 
+                    Your strength and resilience inspire our entire community.
+                </p>
+                <div class="bg-primary bg-opacity-10 p-4 rounded">
+                    <p class="mb-0 text-primary fw-bold">
+                        "Community is strength. Together, we rise."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Download QR Code
+function downloadQR() {
+    const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=RELIEF-APP-QR123456789&bgcolor=ffffff';
+    const link = document.createElement('a');
+    link.download = 'relief-package-qr-code.png';
+    link.href = qrUrl;
+    link.click();
+}
+
+// Print QR Code
+function printQR() {
+    const printContent = `
+        <div style="text-align: center; padding: 20px; font-family: Arial, sans-serif;">
+            <h2>Community Relief - Package Collection</h2>
+            <h3>Reference: REF-240915001</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=RELIEF-APP-QR123456789" style="margin: 20px 0;">
+            <h4>Pickup Details</h4>
+            <p><strong>Date:</strong> Saturday, September 15, 2024</p>
+            <p><strong>Time:</strong> 10:00 AM - 12:00 PM</p>
+            <p><strong>Location:</strong> Community Care Center, 123 Care Street, Ikeja, Lagos</p>
+            <p><strong>Contact:</strong> +234 812 345 6789</p>
+            <hr>
+            <small>Present this QR code and a valid ID during pickup</small>
+        </div>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+// Share Pickup Details
+function sharePickupDetails() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Relief Package Pickup Details',
+            text: 'My relief package is ready for collection. Reference: REF-240915001',
+            url: window.location.href
+        }).catch(console.error);
+    } else {
+        // Fallback for browsers without Web Share API
+        const shareText = `Relief Package Pickup Details\n\nReference: REF-240915001\nDate: Saturday, September 15, 2024\nTime: 10:00 AM - 12:00 PM\nLocation: Community Care Center, Ikeja, Lagos\n\n${window.location.href}`;
+        
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('Pickup details copied to clipboard!');
+            });
+        } else {
+            prompt('Copy these pickup details:', shareText);
+        }
+    }
+}
+
+// Add countdown timer for pickup date
+document.addEventListener('DOMContentLoaded', function() {
+    const pickupDate = new Date('2024-09-15T10:00:00');
+    const now = new Date();
+    
+    if (pickupDate > now) {
+        const timeDiff = pickupDate - now;
+        const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+        
+        if (daysLeft <= 7) {
+            const countdownAlert = document.createElement('div');
+            countdownAlert.className = 'alert alert-warning text-center';
+            countdownAlert.innerHTML = `
+                <i class="bi bi-clock me-2"></i>
+                <strong>Reminder:</strong> Your pickup is in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}.
+            `;
+            
+            document.querySelector('.container').insertBefore(
+                countdownAlert, 
+                document.querySelector('.alert-success')
+            );
+        }
+    }
+});
+</script>
+{% endblock %}

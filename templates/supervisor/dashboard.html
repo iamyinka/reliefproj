@@ -1,0 +1,396 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard Overview</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-calendar3 me-1"></i>Today
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-calendar-week me-1"></i>This Week
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-calendar-month me-1"></i>This Month
+            </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-primary">
+            <i class="bi bi-download me-1"></i>Export Report
+        </button>
+    </div>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card primary">
+            <span class="stat-number">5</span>
+            <h6 class="mb-0">Pending Applications</h6>
+            <div class="metric-change negative">
+                <i class="bi bi-arrow-down"></i> 2 from yesterday
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card success">
+            <span class="stat-number">12</span>
+            <h6 class="mb-0">Today's Pickups</h6>
+            <div class="metric-change positive">
+                <i class="bi bi-arrow-up"></i> 3 from yesterday
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card info">
+            <span class="stat-number">8</span>
+            <h6 class="mb-0">Active Packages</h6>
+            <div class="metric-change">
+                <i class="bi bi-dash"></i> No change
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card warning">
+            <span class="stat-number">3</span>
+            <h6 class="mb-0">Low Stock Alerts</h6>
+            <div class="metric-change negative">
+                <i class="bi bi-exclamation-triangle"></i> Needs attention
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity & Alerts -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Applications</h5>
+                    <a href="{% url 'supervisor_applications' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Application Item -->
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">John Doe <span class="badge bg-danger ms-2">EMERGENCY</span></h6>
+                        <small class="text-muted">APP-001 • Medium Family Basic • 30 minutes ago</small>
+                    </div>
+                    <div class="btn-group">
+                        <button class="action-btn approve" data-app-id="APP-001">Approve</button>
+                        <button class="action-btn view" data-app-id="APP-001">View</button>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Jane Smith</h6>
+                        <small class="text-muted">APP-002 • Small Family Basic • 1 hour ago</small>
+                    </div>
+                    <div class="btn-group">
+                        <button class="action-btn approve" data-app-id="APP-002">Approve</button>
+                        <button class="action-btn view" data-app-id="APP-002">View</button>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Michael Johnson</h6>
+                        <small class="text-muted">APP-003 • Large Family Basic • 2 hours ago</small>
+                    </div>
+                    <span class="application-status status-approved">Approved</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Sarah Williams</h6>
+                        <small class="text-muted">APP-004 • Senior Citizen Special • 3 hours ago</small>
+                    </div>
+                    <div class="btn-group">
+                        <button class="action-btn approve" data-app-id="APP-004">Approve</button>
+                        <button class="action-btn view" data-app-id="APP-004">View</button>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <h6 class="mb-1">David Brown</h6>
+                        <small class="text-muted">APP-005 • Medium Family Premium • 4 hours ago</small>
+                    </div>
+                    <div class="btn-group">
+                        <button class="action-btn approve" data-app-id="APP-005">Approve</button>
+                        <button class="action-btn view" data-app-id="APP-005">View</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="mb-0">Priority Alerts</h5>
+            </div>
+            <div class="card-body">
+                <!-- Alert Item -->
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Low Stock Alert</h6>
+                            <p class="mb-1 small">Medium Family Basic package has only 5 units remaining.</p>
+                            <small class="text-muted">10 minutes ago</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon success">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Emergency Application</h6>
+                            <p class="mb-1 small">John Doe's emergency application needs immediate review.</p>
+                            <small class="text-muted">30 minutes ago</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-item">
+                    <div class="d-flex align-items-start">
+                        <div class="notification-icon info">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Today's Schedule</h6>
+                            <p class="mb-1 small">12 pickups scheduled between 9 AM - 6 PM.</p>
+                            <small class="text-muted">1 hour ago</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="#" class="btn btn-sm btn-outline-primary">View All Alerts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Package Status & Today's Schedule -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Package Stock Status</h5>
+                    <a href="{% url 'supervisor_packages' %}" class="btn btn-sm btn-outline-primary">Manage</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Package Status Item -->
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <span class="stock-indicator in-stock"></span>
+                        <strong>Small Family Basic</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success">25 Available</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <span class="stock-indicator low-stock"></span>
+                        <strong>Medium Family Basic</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-warning text-dark">5 Available</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <span class="stock-indicator out-of-stock"></span>
+                        <strong>Large Family Basic</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-danger">Out of Stock</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <span class="stock-indicator in-stock"></span>
+                        <strong>Senior Citizen Special</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success">15 Available</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <span class="stock-indicator low-stock"></span>
+                        <strong>Emergency Relief</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-warning text-dark">8 Available</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center py-2">
+                    <div>
+                        <span class="stock-indicator low-stock"></span>
+                        <strong>Medium Family Premium</strong>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-warning text-dark">3 Available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Today's Pickup Schedule</h5>
+                    <a href="{% url 'supervisor_schedule' %}" class="btn btn-sm btn-outline-primary">Full Schedule</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Pickup Slot -->
+                <div class="pickup-slot morning">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>9:00 AM - 12:00 PM</strong>
+                            <small class="d-block text-muted">Morning Session</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info">4 Pickups</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 small">
+                        <div>• Michael Johnson - Large Family Basic</div>
+                        <div>• Sarah Williams - Senior Special</div>
+                        <div>• David Brown - Medium Family Premium</div>
+                        <div>• 1 more...</div>
+                    </div>
+                </div>
+                
+                <div class="pickup-slot afternoon">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>12:00 PM - 3:00 PM</strong>
+                            <small class="d-block text-muted">Afternoon Session</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info">5 Pickups</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 small">
+                        <div>• Grace Adams - Small Family Basic</div>
+                        <div>• Peter Wilson - Emergency Relief</div>
+                        <div>• Mary Jones - Medium Family Basic</div>
+                        <div>• 2 more...</div>
+                    </div>
+                </div>
+                
+                <div class="pickup-slot evening">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>3:00 PM - 6:00 PM</strong>
+                            <small class="d-block text-muted">Evening Session</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info">3 Pickups</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 small">
+                        <div>• Robert Taylor - Medium Family Basic</div>
+                        <div>• Lisa Davis - Small Family Premium</div>
+                        <div>• James Miller - Senior Special</div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <button class="btn btn-success btn-sm" onclick="window.location.href='{% url 'supervisor_scanner' %}'">
+                        <i class="bi bi-qr-code-scan me-1"></i>Start QR Scanner
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <button class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                                style="min-height: 100px;" data-bs-toggle="modal" data-bs-target="#newPackageModal">
+                            <i class="bi bi-plus-circle mb-2" style="font-size: 2rem;"></i>
+                            <span>Create Package</span>
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                                style="min-height: 100px;" onclick="quickApproveNext()">
+                            <i class="bi bi-check-circle mb-2" style="font-size: 2rem;"></i>
+                            <span>Quick Approve</span>
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                                style="min-height: 100px;" onclick="window.location.href='{% url 'supervisor_scanner' %}'">
+                            <i class="bi bi-qr-code-scan mb-2" style="font-size: 2rem;"></i>
+                            <span>Scan QR Code</span>
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
+                                style="min-height: 100px;" onclick="window.location.href='{% url 'supervisor_reports' %}'">
+                            <i class="bi bi-bar-chart mb-2" style="font-size: 2rem;"></i>
+                            <span>View Reports</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set page identifier for JavaScript
+    document.body.dataset.page = 'dashboard';
+    
+    // Auto-refresh dashboard every 5 minutes
+    setInterval(function() {
+        // In a real app, this would refresh the data
+        console.log('Dashboard auto-refresh');
+    }, 300000);
+});
+</script>
+{% endblock %}

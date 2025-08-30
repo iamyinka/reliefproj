@@ -1,0 +1,406 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}Applications Review - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Applications Review</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-success" onclick="approveSelected()">
+                <i class="bi bi-check-circle me-1"></i>Approve Selected
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="rejectSelected()">
+                <i class="bi bi-x-circle me-1"></i>Reject Selected
+            </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportApplications()">
+            <i class="bi bi-download me-1"></i>Export
+        </button>
+    </div>
+</div>
+
+<!-- Filter and Search -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="searchApplications" class="form-label">Search Applications</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="searchApplications" 
+                                   placeholder="Name, ID, or package...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="pending" selected>Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="packageFilter" class="form-label">Package Type</label>
+                        <select class="form-select" id="packageFilter">
+                            <option value="all">All Packages</option>
+                            <option value="small">Small Family</option>
+                            <option value="medium">Medium Family</option>
+                            <option value="large">Large Family</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="senior">Senior Citizen</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="text-warning h4 mb-1">5</div>
+                        <small class="text-muted">Pending</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-success h4 mb-1">23</div>
+                        <small class="text-muted">Approved</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-danger h4 mb-1">2</div>
+                        <small class="text-muted">Rejected</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Buttons -->
+<div class="mb-3">
+    <div class="btn-group" role="group">
+        <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterAll" data-filter="all" autocomplete="off">
+        <label class="btn btn-outline-primary" for="filterAll">All (30)</label>
+
+        <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterPending" data-filter="pending" autocomplete="off" checked>
+        <label class="btn btn-outline-warning" for="filterPending">Pending (5)</label>
+
+        <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterApproved" data-filter="approved" autocomplete="off">
+        <label class="btn btn-outline-success" for="filterApproved">Approved (23)</label>
+
+        <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterRejected" data-filter="rejected" autocomplete="off">
+        <label class="btn btn-outline-danger" for="filterRejected">Rejected (2)</label>
+
+        <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterEmergency" data-filter="emergency" autocomplete="off">
+        <label class="btn btn-outline-danger" for="filterEmergency">🚨 Emergency (1)</label>
+    </div>
+</div>
+
+<!-- Applications List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Applications List</h6>
+                    <div class="d-flex align-items-center">
+                        <small class="text-muted me-3">Sort by:</small>
+                        <select class="form-select form-select-sm" id="sortApplications" style="width: auto;">
+                            <option value="date">Latest First</option>
+                            <option value="name">Name A-Z</option>
+                            <option value="priority">Priority</option>
+                            <option value="package">Package Type</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="applicationsContainer">
+                    <!-- Application items will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application Detail Modal -->
+<div class="modal fade" id="applicationDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Application Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="applicationDetailContent">
+                    <!-- Details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="rejectApplicationBtn">Reject</button>
+                <button type="button" class="btn btn-success" id="approveApplicationBtn">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Action Confirmation Modal -->
+<div class="modal fade" id="bulkActionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Bulk Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="bulkActionContent">
+                    <!-- Confirmation content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmBulkActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rejection Reason Modal -->
+<div class="modal fade" id="rejectionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rejection Reason</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="rejectionReason" class="form-label">Please provide a reason for rejection:</label>
+                    <textarea class="form-control" id="rejectionReason" rows="4" 
+                              placeholder="Enter detailed reason for rejection..."></textarea>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sendNotification">
+                    <label class="form-check-label" for="sendNotification">
+                        Send notification to applicant
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmRejectionBtn">Confirm Rejection</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set page identifier
+    document.body.dataset.page = 'applications';
+    
+    // Initialize application manager if not already done
+    if (!window.applicationManager) {
+        window.applicationManager = new ApplicationManager();
+    }
+});
+
+// Bulk Actions
+function approveSelected() {
+    const selected = getSelectedApplications();
+    if (selected.length === 0) {
+        showNotification('Please select applications to approve', 'warning');
+        return;
+    }
+    
+    showBulkActionModal('approve', selected);
+}
+
+function rejectSelected() {
+    const selected = getSelectedApplications();
+    if (selected.length === 0) {
+        showNotification('Please select applications to reject', 'warning');
+        return;
+    }
+    
+    showBulkActionModal('reject', selected);
+}
+
+function getSelectedApplications() {
+    const checkboxes = document.querySelectorAll('.application-checkbox:checked');
+    return Array.from(checkboxes).map(cb => cb.dataset.appId);
+}
+
+function showBulkActionModal(action, applications) {
+    const modal = new bootstrap.Modal(document.getElementById('bulkActionModal'));
+    const content = document.getElementById('bulkActionContent');
+    const confirmBtn = document.getElementById('confirmBulkActionBtn');
+    
+    const actionText = action === 'approve' ? 'approve' : 'reject';
+    const actionClass = action === 'approve' ? 'success' : 'danger';
+    
+    content.innerHTML = `
+        <p>Are you sure you want to <strong>${actionText}</strong> the following ${applications.length} application(s)?</p>
+        <ul>
+            ${applications.map(id => `<li>Application ${id}</li>`).join('')}
+        </ul>
+    `;
+    
+    confirmBtn.className = `btn btn-${actionClass}`;
+    confirmBtn.textContent = `${actionText.charAt(0).toUpperCase() + actionText.slice(1)} All`;
+    
+    confirmBtn.onclick = function() {
+        processBulkAction(action, applications);
+        modal.hide();
+    };
+    
+    modal.show();
+}
+
+function processBulkAction(action, applications) {
+    // Simulate bulk action processing
+    applications.forEach(appId => {
+        if (action === 'approve') {
+            window.applicationManager.approveApplication(appId);
+        } else {
+            // For bulk rejection, use a default reason
+            const reason = 'Bulk rejection - requirements not met';
+            window.applicationManager.rejectApplication(appId, reason);
+        }
+    });
+    
+    showNotification(`${applications.length} application(s) ${action}d successfully!`, 
+                    action === 'approve' ? 'success' : 'warning');
+}
+
+function exportApplications() {
+    // Simulate export functionality
+    showNotification('Export feature coming soon!', 'info');
+}
+
+function resetFilters() {
+    document.getElementById('searchApplications').value = '';
+    document.getElementById('statusFilter').value = 'all';
+    document.getElementById('packageFilter').value = 'all';
+    document.getElementById('sortApplications').value = 'date';
+    
+    // Reset filter buttons
+    document.getElementById('filterAll').checked = true;
+    
+    if (window.applicationManager) {
+        window.applicationManager.setFilter('all');
+    }
+    
+    showNotification('Filters reset', 'info');
+}
+
+// Application detail viewing
+function viewApplicationDetail(appId) {
+    // Simulate loading application details
+    const mockDetail = {
+        id: appId,
+        name: 'John Doe',
+        phone: '08012345678',
+        email: 'john.doe@email.com',
+        address: '123 Main Street, Lagos',
+        familySize: 5,
+        children: 3,
+        elderly: 0,
+        employment: 'Part-time employment',
+        package: 'Medium Family Basic',
+        specialNeeds: 'None',
+        situation: 'Lost job due to economic situation, need temporary assistance for family.',
+        submittedDate: '2024-08-30 14:30',
+        priority: 'normal',
+        status: 'pending'
+    };
+    
+    const modal = new bootstrap.Modal(document.getElementById('applicationDetailModal'));
+    const content = document.getElementById('applicationDetailContent');
+    
+    content.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Personal Information</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>Name:</strong></td><td>${mockDetail.name}</td></tr>
+                    <tr><td><strong>Phone:</strong></td><td>${mockDetail.phone}</td></tr>
+                    <tr><td><strong>Email:</strong></td><td>${mockDetail.email || 'Not provided'}</td></tr>
+                    <tr><td><strong>Address:</strong></td><td>${mockDetail.address}</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6>Family Details</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>Family Size:</strong></td><td>${mockDetail.familySize} members</td></tr>
+                    <tr><td><strong>Children:</strong></td><td>${mockDetail.children}</td></tr>
+                    <tr><td><strong>Elderly:</strong></td><td>${mockDetail.elderly}</td></tr>
+                    <tr><td><strong>Employment:</strong></td><td>${mockDetail.employment}</td></tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6>Request Details</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>Package Requested:</strong></td><td>${mockDetail.package}</td></tr>
+                    <tr><td><strong>Special Needs:</strong></td><td>${mockDetail.specialNeeds}</td></tr>
+                    <tr><td><strong>Current Situation:</strong></td><td>${mockDetail.situation}</td></tr>
+                    <tr><td><strong>Submitted:</strong></td><td>${mockDetail.submittedDate}</td></tr>
+                    <tr><td><strong>Priority:</strong></td><td>
+                        <span class="badge ${mockDetail.priority === 'emergency' ? 'bg-danger' : 'bg-secondary'}">${mockDetail.priority}</span>
+                    </td></tr>
+                </table>
+            </div>
+        </div>
+    `;
+    
+    // Set up action buttons
+    document.getElementById('approveApplicationBtn').onclick = function() {
+        window.applicationManager.approveApplication(appId);
+        modal.hide();
+    };
+    
+    document.getElementById('rejectApplicationBtn').onclick = function() {
+        modal.hide();
+        showRejectionModal(appId);
+    };
+    
+    modal.show();
+}
+
+function showRejectionModal(appId) {
+    const modal = new bootstrap.Modal(document.getElementById('rejectionModal'));
+    
+    document.getElementById('confirmRejectionBtn').onclick = function() {
+        const reason = document.getElementById('rejectionReason').value;
+        if (!reason.trim()) {
+            showNotification('Please provide a reason for rejection', 'warning');
+            return;
+        }
+        
+        window.applicationManager.rejectApplication(appId, reason);
+        modal.hide();
+        
+        // Clear the form
+        document.getElementById('rejectionReason').value = '';
+        document.getElementById('sendNotification').checked = false;
+    };
+    
+    modal.show();
+}
+</script>
+{% endblock %}

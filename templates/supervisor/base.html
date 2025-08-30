@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Supervisor Dashboard - Greatness Community Relief{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    {% load static %}
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/supervisor.css' %}" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-light">
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{% url 'supervisor_dashboard' %}">
+                <i class="bi bi-shield-check me-2"></i>GC Relief Supervisor
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell-fill"></i>
+                            <span class="badge bg-danger">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-exclamation-circle text-warning me-2"></i>5 new applications</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-box text-info me-2"></i>Low stock: Rice</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-calendar text-success me-2"></i>Today's pickups: 12</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'supervisor_notifications' %}">View all notifications</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>Mrs. Sarah Johnson
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'home' %}" target="_blank"><i class="bi bi-box-arrow-up-right me-2"></i>View Public Site</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_dashboard' %}active{% endif %}" 
+                               href="{% url 'supervisor_dashboard' %}">
+                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_applications' %}active{% endif %}" 
+                               href="{% url 'supervisor_applications' %}">
+                                <i class="bi bi-file-text me-2"></i>Applications
+                                <span class="badge bg-warning ms-auto">5</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_packages' %}active{% endif %}" 
+                               href="{% url 'supervisor_packages' %}">
+                                <i class="bi bi-box-seam me-2"></i>Package Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_schedule' %}active{% endif %}" 
+                               href="{% url 'supervisor_schedule' %}">
+                                <i class="bi bi-calendar-check me-2"></i>Pickup Schedule
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_scanner' %}active{% endif %}" 
+                               href="{% url 'supervisor_scanner' %}">
+                                <i class="bi bi-qr-code-scan me-2"></i>QR Scanner
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_reports' %}active{% endif %}" 
+                               href="{% url 'supervisor_reports' %}">
+                                <i class="bi bi-bar-chart me-2"></i>Reports & Analytics
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                        <span>Quick Actions</span>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="#" data-bs-toggle="modal" data-bs-target="#newPackageModal">
+                                <i class="bi bi-plus-circle me-2"></i>Add New Package
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-success" href="#" onclick="quickApproveNext()">
+                                <i class="bi bi-check-circle me-2"></i>Quick Approve Next
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-info" href="{% url 'supervisor_scanner' %}">
+                                <i class="bi bi-qr-code me-2"></i>Scan QR Code
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <!-- Quick Stats -->
+                    <div class="px-3">
+                        <h6 class="text-muted text-uppercase mb-3">Today's Summary</h6>
+                        <div class="row g-2 text-center">
+                            <div class="col-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body p-2">
+                                        <div class="text-primary fw-bold">5</div>
+                                        <small class="text-muted">Pending</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body p-2">
+                                        <div class="text-success fw-bold">12</div>
+                                        <small class="text-muted">Pickups</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="pt-3 pb-2 mb-3">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Quick Action Modals -->
+    <!-- New Package Modal -->
+    <div class="modal fade" id="newPackageModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Package</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label for="packageName" class="form-label">Package Name</label>
+                                <input type="text" class="form-control" id="packageName" placeholder="e.g., Medium Family Basic">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="cashAmount" class="form-label">Cash Amount (₦)</label>
+                                <input type="number" class="form-control" id="cashAmount" placeholder="8000">
+                            </div>
+                            <div class="col-12">
+                                <label for="packageItems" class="form-label">Food Items</label>
+                                <textarea class="form-control" id="packageItems" rows="3" 
+                                          placeholder="10kg Rice, 5kg Beans, 2L Vegetable Oil..."></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="familySize" class="form-label">Target Family Size</label>
+                                <select class="form-select" id="familySize">
+                                    <option value="small">Small (1-3)</option>
+                                    <option value="medium">Medium (4-6)</option>
+                                    <option value="large">Large (7+)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="stockQuantity" class="form-label">Initial Stock</label>
+                                <input type="number" class="form-control" id="stockQuantity" placeholder="50">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Create Package</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% load static %}
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/supervisor.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

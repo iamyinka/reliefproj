@@ -1,0 +1,530 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}QR Scanner - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">QR Code Scanner</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-info" id="switchCamera">
+                <i class="bi bi-camera-reels me-1"></i>Switch Camera
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" id="flashlight">
+                <i class="bi bi-lightbulb me-1"></i>Flashlight
+            </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary" onclick="showScanHistory()">
+            <i class="bi bi-clock-history me-1"></i>Scan History
+        </button>
+    </div>
+</div>
+
+<!-- Scanner Status -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="alert alert-info d-flex align-items-center">
+            <i class="bi bi-info-circle me-3 fs-4"></i>
+            <div>
+                <h6 class="alert-heading mb-1">Scanner Ready</h6>
+                <p class="mb-0">Position the QR code within the scanner viewfinder or enter the code manually below.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="text-center">
+            <div class="h4 text-success mb-1" id="todayScansCount">47</div>
+            <small class="text-muted">QR Codes Scanned Today</small>
+        </div>
+    </div>
+</div>
+
+<!-- Main Scanner Interface -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="scanner-container">
+            <h5 class="mb-4 text-center">QR Code Scanner</h5>
+            
+            <!-- Scanner Viewfinder -->
+            <div class="scanner-viewfinder">
+                <div class="scanner-corners"></div>
+                <i class="bi bi-qr-code-scan display-4 text-muted"></i>
+            </div>
+            
+            <!-- Scanner Controls -->
+            <div class="d-flex justify-content-center gap-3 mb-4">
+                <button class="btn btn-success btn-lg" id="startScan">
+                    <i class="bi bi-play-fill me-2"></i>Start Scanning
+                </button>
+                <button class="btn btn-outline-secondary btn-lg" id="manualEntry">
+                    <i class="bi bi-keyboard me-2"></i>Manual Entry
+                </button>
+            </div>
+            
+            <!-- Manual Entry Form -->
+            <div class="card d-none" id="manualEntryForm">
+                <div class="card-body">
+                    <h6 class="card-title">Manual QR Code Entry</h6>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="manualQRCode" 
+                               placeholder="Enter QR code (e.g., RELIEF-APP-QR123456789)">
+                        <button class="btn btn-primary" onclick="processManualEntry()">
+                            <i class="bi bi-search"></i> Lookup
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scan Result -->
+            <div id="scanResult"></div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Today's Pickup Queue -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">Today's Pickup Queue</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                            <h6 class="mb-1">Michael Johnson</h6>
+                            <small class="text-muted">REF-240830001 • 9:00 AM</small>
+                        </div>
+                        <span class="badge bg-success">Ready</span>
+                    </div>
+                    
+                    <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                            <h6 class="mb-1">Sarah Williams</h6>
+                            <small class="text-muted">REF-240830002 • 9:30 AM</small>
+                        </div>
+                        <span class="badge bg-success">Ready</span>
+                    </div>
+                    
+                    <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                            <h6 class="mb-1">David Brown</h6>
+                            <small class="text-muted">REF-240830003 • 10:00 AM</small>
+                        </div>
+                        <span class="badge bg-success">Ready</span>
+                    </div>
+                    
+                    <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                            <h6 class="mb-1">Grace Adams</h6>
+                            <small class="text-muted">REF-240830004 • 2:00 PM</small>
+                        </div>
+                        <span class="badge bg-warning text-dark">Waiting</span>
+                    </div>
+                    
+                    <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                            <h6 class="mb-1">Peter Wilson</h6>
+                            <small class="text-muted">REF-240830005 • 2:30 PM</small>
+                        </div>
+                        <span class="badge bg-warning text-dark">Waiting</span>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="{% url 'supervisor_schedule' %}" class="btn btn-sm btn-outline-primary">
+                        View Full Schedule
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scanner Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Scanner Statistics</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <div class="h4 text-success mb-1">47</div>
+                        <small class="text-muted">Today</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="h4 text-info mb-1">285</div>
+                        <small class="text-muted">This Week</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 text-primary mb-1">1,247</div>
+                        <small class="text-muted">This Month</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 text-warning mb-1">2</div>
+                        <small class="text-muted">Invalid</small>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">Success Rate</small>
+                    <small class="fw-bold text-success">98.4%</small>
+                </div>
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar bg-success" style="width: 98.4%"></div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">Avg. Scan Time</small>
+                    <small class="fw-bold">2.3s</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Scans -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Recent Scans</h6>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="refreshRecentScans()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Time</th>
+                                <th>Reference</th>
+                                <th>Applicant</th>
+                                <th>Package</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentScansTable">
+                            <tr>
+                                <td>14:45</td>
+                                <td>REF-240830047</td>
+                                <td>Mary Johnson</td>
+                                <td>Small Family Basic</td>
+                                <td><span class="badge bg-success">Collected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewScanDetails('REF-240830047')">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>14:42</td>
+                                <td>REF-240830046</td>
+                                <td>James Wilson</td>
+                                <td>Medium Family Basic</td>
+                                <td><span class="badge bg-success">Collected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewScanDetails('REF-240830046')">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>14:38</td>
+                                <td>REF-240830045</td>
+                                <td>Lisa Davis</td>
+                                <td>Senior Citizen Special</td>
+                                <td><span class="badge bg-success">Collected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewScanDetails('REF-240830045')">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>14:35</td>
+                                <td>INVALID-CODE</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="badge bg-danger">Invalid QR</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                        N/A
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>14:32</td>
+                                <td>REF-240830044</td>
+                                <td>Robert Taylor</td>
+                                <td>Large Family Basic</td>
+                                <td><span class="badge bg-success">Collected</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewScanDetails('REF-240830044')">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scan Details Modal -->
+<div class="modal fade" id="scanDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Scan Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="scanDetailsContent">
+                    <!-- Details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printReceipt()">
+                    <i class="bi bi-printer me-1"></i>Print Receipt
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scan History Modal -->
+<div class="modal fade" id="scanHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Scan History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" id="historyDateFrom" placeholder="From Date">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" id="historyDateTo" placeholder="To Date">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary" onclick="filterScanHistory()">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Reference</th>
+                                <th>Applicant</th>
+                                <th>Package</th>
+                                <th>Supervisor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scanHistoryTable">
+                            <!-- History data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="exportScanHistory()">
+                    <i class="bi bi-download"></i> Export
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set page identifier
+    document.body.dataset.page = 'scanner';
+    
+    // Initialize QR scanner if not already done
+    if (!window.qrScanner) {
+        window.qrScanner = new QRScanner();
+    }
+    
+    // Initialize manual entry toggle
+    document.getElementById('manualEntry').addEventListener('click', toggleManualEntry);
+    
+    // Auto-refresh recent scans every 30 seconds
+    setInterval(refreshRecentScans, 30000);
+});
+
+function toggleManualEntry() {
+    const form = document.getElementById('manualEntryForm');
+    const button = document.getElementById('manualEntry');
+    
+    if (form.classList.contains('d-none')) {
+        form.classList.remove('d-none');
+        button.innerHTML = '<i class="bi bi-x me-2"></i>Cancel';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-outline-danger');
+        
+        document.getElementById('manualQRCode').focus();
+    } else {
+        form.classList.add('d-none');
+        button.innerHTML = '<i class="bi bi-keyboard me-2"></i>Manual Entry';
+        button.classList.remove('btn-outline-danger');
+        button.classList.add('btn-outline-secondary');
+        
+        document.getElementById('manualQRCode').value = '';
+    }
+}
+
+function processManualEntry() {
+    const qrCode = document.getElementById('manualQRCode').value.trim();
+    if (!qrCode) {
+        showNotification('Please enter a QR code', 'warning');
+        return;
+    }
+    
+    if (window.qrScanner) {
+        window.qrScanner.processScannedCode(qrCode);
+        toggleManualEntry(); // Hide the manual entry form
+    }
+}
+
+function refreshRecentScans() {
+    // Simulate refreshing recent scans
+    showNotification('Recent scans refreshed', 'info');
+}
+
+function viewScanDetails(reference) {
+    // Simulate loading scan details
+    const mockDetails = {
+        reference: reference,
+        applicant: 'Mary Johnson',
+        phone: '08012345678',
+        package: 'Small Family Basic',
+        items: '5kg Rice, 2kg Beans, 1L Oil, ₦5,000 Cash',
+        scanTime: '14:45:23',
+        supervisor: 'Mrs. Sarah Johnson',
+        notes: 'Package collected successfully. Member was very grateful.'
+    };
+    
+    const modal = new bootstrap.Modal(document.getElementById('scanDetailsModal'));
+    const content = document.getElementById('scanDetailsContent');
+    
+    content.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Collection Details</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>Reference:</strong></td><td>${mockDetails.reference}</td></tr>
+                    <tr><td><strong>Applicant:</strong></td><td>${mockDetails.applicant}</td></tr>
+                    <tr><td><strong>Phone:</strong></td><td>${mockDetails.phone}</td></tr>
+                    <tr><td><strong>Scan Time:</strong></td><td>${mockDetails.scanTime}</td></tr>
+                    <tr><td><strong>Supervisor:</strong></td><td>${mockDetails.supervisor}</td></tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6>Package Details</h6>
+                <table class="table table-sm">
+                    <tr><td><strong>Package:</strong></td><td>${mockDetails.package}</td></tr>
+                    <tr><td><strong>Contents:</strong></td><td>${mockDetails.items}</td></tr>
+                </table>
+                
+                <h6>Notes</h6>
+                <p class="small">${mockDetails.notes}</p>
+            </div>
+        </div>
+    `;
+    
+    modal.show();
+}
+
+function showScanHistory() {
+    const modal = new bootstrap.Modal(document.getElementById('scanHistoryModal'));
+    loadScanHistory();
+    modal.show();
+}
+
+function loadScanHistory() {
+    // Simulate loading scan history
+    const tbody = document.getElementById('scanHistoryTable');
+    const mockHistory = [
+        ['2024-08-30 14:45', 'REF-240830047', 'Mary Johnson', 'Small Family Basic', 'Mrs. Sarah Johnson', 'Collected'],
+        ['2024-08-30 14:42', 'REF-240830046', 'James Wilson', 'Medium Family Basic', 'Mrs. Sarah Johnson', 'Collected'],
+        ['2024-08-30 14:38', 'REF-240830045', 'Lisa Davis', 'Senior Citizen Special', 'Mrs. Sarah Johnson', 'Collected'],
+        ['2024-08-30 14:32', 'REF-240830044', 'Robert Taylor', 'Large Family Basic', 'Mrs. Sarah Johnson', 'Collected'],
+        ['2024-08-30 14:28', 'REF-240830043', 'Grace Adams', 'Emergency Relief', 'Mrs. Sarah Johnson', 'Collected']
+    ];
+    
+    tbody.innerHTML = mockHistory.map(row => `
+        <tr>
+            <td>${row[0]}</td>
+            <td>${row[1]}</td>
+            <td>${row[2]}</td>
+            <td>${row[3]}</td>
+            <td>${row[4]}</td>
+            <td><span class="badge bg-success">${row[5]}</span></td>
+        </tr>
+    `).join('');
+}
+
+function filterScanHistory() {
+    const dateFrom = document.getElementById('historyDateFrom').value;
+    const dateTo = document.getElementById('historyDateTo').value;
+    
+    // Simulate filtering
+    showNotification('History filtered successfully', 'info');
+    loadScanHistory(); // Reload with filters applied
+}
+
+function exportScanHistory() {
+    showNotification('Export feature coming soon!', 'info');
+}
+
+function printReceipt() {
+    showNotification('Print feature coming soon!', 'info');
+}
+
+// Camera and flashlight controls
+document.getElementById('switchCamera').addEventListener('click', function() {
+    showNotification('Camera switching feature coming soon!', 'info');
+});
+
+document.getElementById('flashlight').addEventListener('click', function() {
+    showNotification('Flashlight toggle feature coming soon!', 'info');
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Space bar to start/stop scanning
+    if (e.code === 'Space' && !e.target.matches('input, textarea')) {
+        e.preventDefault();
+        const startBtn = document.getElementById('startScan');
+        startBtn.click();
+    }
+    
+    // Enter key in manual entry field
+    if (e.code === 'Enter' && e.target.id === 'manualQRCode') {
+        processManualEntry();
+    }
+    
+    // Escape key to cancel manual entry
+    if (e.code === 'Escape' && !document.getElementById('manualEntryForm').classList.contains('d-none')) {
+        toggleManualEntry();
+    }
+});
+</script>
+{% endblock %}

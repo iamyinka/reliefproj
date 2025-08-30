@@ -1,0 +1,471 @@
+{% extends 'supervisor/base.html' %}
+{% load static %}
+
+{% block title %}Pickup Schedule - Supervisor - Greatness Community Relief{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Pickup Schedule</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="previousWeek()">
+                <i class="bi bi-chevron-left"></i> Previous
+            </button>
+            <button type="button" class="btn btn-sm btn-primary">This Week</button>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="nextWeek()">
+                Next <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+        <button type="button" class="btn btn-sm btn-success">
+            <i class="bi bi-download me-1"></i>Export Schedule
+        </button>
+    </div>
+</div>
+
+<!-- Schedule Overview -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="text-center">
+            <div class="h4 text-primary mb-1">67</div>
+            <small class="text-muted">Total Pickups This Week</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="text-center">
+            <div class="h4 text-success mb-1">45</div>
+            <small class="text-muted">Completed</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="text-center">
+            <div class="h4 text-warning mb-1">15</div>
+            <small class="text-muted">Scheduled Today</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="text-center">
+            <div class="h4 text-info mb-1">7</div>
+            <small class="text-muted">Pending</small>
+        </div>
+    </div>
+</div>
+
+<!-- Calendar View -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Weekly Schedule - August 26 - September 1, 2024</h6>
+                    <div class="btn-group btn-group-sm">
+                        <input type="radio" class="btn-check" name="viewType" id="weekView" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="weekView">Week</label>
+                        
+                        <input type="radio" class="btn-check" name="viewType" id="dayView" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="dayView">Day</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="row g-0" id="weeklySchedule">
+                    <!-- Monday -->
+                    <div class="col">
+                        <div class="calendar-day">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Mon</div>
+                                <div class="text-muted small">26</div>
+                            </div>
+                            
+                            <div class="pickup-slot morning">
+                                <small class="fw-bold">9AM-12PM</small>
+                                <div class="small mt-1">
+                                    <div>• John Doe</div>
+                                    <div>• Mary Smith</div>
+                                    <div class="text-muted">+2 more</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pickup-slot afternoon">
+                                <small class="fw-bold">2PM-5PM</small>
+                                <div class="small mt-1">
+                                    <div>• Peter Jones</div>
+                                    <div class="text-muted">+1 more</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tuesday -->
+                    <div class="col">
+                        <div class="calendar-day">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Tue</div>
+                                <div class="text-muted small">27</div>
+                            </div>
+                            
+                            <div class="pickup-slot morning">
+                                <small class="fw-bold">9AM-12PM</small>
+                                <div class="small mt-1">
+                                    <div>• Sarah Wilson</div>
+                                    <div>• David Brown</div>
+                                    <div class="text-muted">+3 more</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pickup-slot evening">
+                                <small class="fw-bold">5PM-7PM</small>
+                                <div class="small mt-1">
+                                    <div>• Lisa Davis</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Wednesday -->
+                    <div class="col">
+                        <div class="calendar-day">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Wed</div>
+                                <div class="text-muted small">28</div>
+                            </div>
+                            
+                            <div class="pickup-slot morning">
+                                <small class="fw-bold">9AM-12PM</small>
+                                <div class="small mt-1">
+                                    <div>• Michael Johnson</div>
+                                    <div>• Grace Adams</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pickup-slot afternoon">
+                                <small class="fw-bold">2PM-5PM</small>
+                                <div class="small mt-1">
+                                    <div>• Robert Taylor</div>
+                                    <div>• James Miller</div>
+                                    <div class="text-muted">+4 more</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Thursday -->
+                    <div class="col">
+                        <div class="calendar-day">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Thu</div>
+                                <div class="text-muted small">29</div>
+                            </div>
+                            
+                            <div class="pickup-slot afternoon">
+                                <small class="fw-bold">2PM-5PM</small>
+                                <div class="small mt-1">
+                                    <div>• Anna White</div>
+                                    <div>• Tom Green</div>
+                                    <div class="text-muted">+1 more</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Friday -->
+                    <div class="col">
+                        <div class="calendar-day today">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Fri <span class="badge bg-primary">Today</span></div>
+                                <div class="text-muted small">30</div>
+                            </div>
+                            
+                            <div class="pickup-slot morning">
+                                <small class="fw-bold">9AM-12PM</small>
+                                <div class="small mt-1">
+                                    <div>• Carol Johnson</div>
+                                    <div>• Mark Wilson</div>
+                                    <div class="text-muted">+3 more</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pickup-slot afternoon">
+                                <small class="fw-bold">2PM-5PM</small>
+                                <div class="small mt-1">
+                                    <div>• Helen Brown</div>
+                                    <div>• Paul Davis</div>
+                                    <div class="text-muted">+6 more</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Saturday -->
+                    <div class="col">
+                        <div class="calendar-day has-pickups">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Sat</div>
+                                <div class="text-muted small">31</div>
+                            </div>
+                            
+                            <div class="pickup-slot morning">
+                                <small class="fw-bold">10AM-1PM</small>
+                                <div class="small mt-1">
+                                    <div>• Weekend Special</div>
+                                    <div class="text-muted">+8 pickups</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sunday -->
+                    <div class="col">
+                        <div class="calendar-day">
+                            <div class="fw-bold mb-2 text-center">
+                                <div>Sun</div>
+                                <div class="text-muted small">1</div>
+                            </div>
+                            <div class="text-center text-muted small">
+                                No pickups scheduled
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Today's Detailed Schedule -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Today's Pickup Details - Friday, August 30</h6>
+                    <button class="btn btn-sm btn-primary" onclick="window.location.href='{% url 'supervisor_scanner' %}'">
+                        <i class="bi bi-qr-code-scan me-1"></i>Start Scanner
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Time</th>
+                                <th>Applicant</th>
+                                <th>Reference</th>
+                                <th>Package</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>9:00 AM</td>
+                                <td>Carol Johnson</td>
+                                <td>REF-240830048</td>
+                                <td>Medium Family Basic</td>
+                                <td>08012345678</td>
+                                <td><span class="badge bg-success">Ready</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="callApplicant('08012345678')">
+                                            <i class="bi bi-telephone"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830048')">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>9:30 AM</td>
+                                <td>Mark Wilson</td>
+                                <td>REF-240830049</td>
+                                <td>Large Family Basic</td>
+                                <td>08087654321</td>
+                                <td><span class="badge bg-warning text-dark">Waiting</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="callApplicant('08087654321')">
+                                            <i class="bi bi-telephone"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830049')">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>10:00 AM</td>
+                                <td>Sarah Williams</td>
+                                <td>REF-240830050</td>
+                                <td>Senior Citizen Special</td>
+                                <td>08054321876</td>
+                                <td><span class="badge bg-success">Ready</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="callApplicant('08054321876')">
+                                            <i class="bi bi-telephone"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830050')">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-success">
+                                <td>10:30 AM</td>
+                                <td>David Brown</td>
+                                <td>REF-240830051</td>
+                                <td>Emergency Relief</td>
+                                <td>08076543210</td>
+                                <td><span class="badge bg-success">Collected</span></td>
+                                <td>
+                                    <small class="text-muted">✓ Completed at 10:45 AM</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2:00 PM</td>
+                                <td>Helen Brown</td>
+                                <td>REF-240830052</td>
+                                <td>Small Family Basic</td>
+                                <td>08098765432</td>
+                                <td><span class="badge bg-info">Scheduled</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="callApplicant('08098765432')">
+                                            <i class="bi bi-telephone"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830052')">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2:30 PM</td>
+                                <td>Paul Davis</td>
+                                <td>REF-240830053</td>
+                                <td>Medium Family Premium</td>
+                                <td>08032165487</td>
+                                <td><span class="badge bg-info">Scheduled</span></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="callApplicant('08032165487')">
+                                            <i class="bi bi-telephone"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830053')">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Settings -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Schedule Settings</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="defaultTimeSlots" class="form-label">Default Time Slots</label>
+                    <select class="form-select" id="defaultTimeSlots" multiple>
+                        <option value="morning" selected>Morning (9:00 AM - 12:00 PM)</option>
+                        <option value="afternoon" selected>Afternoon (12:00 PM - 3:00 PM)</option>
+                        <option value="evening" selected>Evening (3:00 PM - 6:00 PM)</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="maxPickupsPerSlot" class="form-label">Max Pickups Per Slot</label>
+                    <input type="number" class="form-control" id="maxPickupsPerSlot" value="10">
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="allowWeekendPickups" checked>
+                        <label class="form-check-label" for="allowWeekendPickups">
+                            Allow Weekend Pickups
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveScheduleSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Quick Statistics</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <div class="h5 text-primary mb-1">89%</div>
+                        <small class="text-muted">On-time Pickup Rate</small>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="h5 text-success mb-1">6.5</div>
+                        <small class="text-muted">Avg. Pickups/Day</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h5 text-info mb-1">12 min</div>
+                        <small class="text-muted">Avg. Processing Time</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h5 text-warning mb-1">3%</div>
+                        <small class="text-muted">No-show Rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function callApplicant(phoneNumber) {
+    if (confirm(`Call ${phoneNumber}?`)) {
+        window.location.href = `tel:${phoneNumber}`;
+    }
+}
+
+function viewDetails(reference) {
+    showNotification(`Viewing details for ${reference}`, 'info');
+    // In real implementation, this would open a modal with full applicant details
+}
+
+function previousWeek() {
+    showNotification('Loading previous week...', 'info');
+}
+
+function nextWeek() {
+    showNotification('Loading next week...', 'info');
+}
+
+function saveScheduleSettings() {
+    showNotification('Schedule settings saved successfully!', 'success');
+}
+
+// View type switching
+document.querySelectorAll('input[name="viewType"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.id === 'dayView') {
+            showNotification('Day view feature coming soon!', 'info');
+            document.getElementById('weekView').checked = true;
+        }
+    });
+});
+</script>
+{% endblock %}
