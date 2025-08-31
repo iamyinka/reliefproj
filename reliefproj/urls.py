@@ -60,6 +60,14 @@ class SupervisorNotificationsView(TemplateView):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # API routes
+    path('api/applications/', include('applications.urls')),
+    path('api/packages/', include('packages.urls')),
+    path('api/pickups/', include('pickups.urls')),
+    path('api/auth/', include('rest_framework.urls')),
+    
+    # Frontend routes
     path('', HomeView.as_view(), name='home'),
     path('packages/', PackagesView.as_view(), name='packages'),
     path('apply/', ApplyView.as_view(), name='apply'),
