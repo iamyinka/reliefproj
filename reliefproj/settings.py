@@ -175,7 +175,8 @@ if DEBUG:
 ]
 else:
 	CORS_ALLOWED_ORIGINS = [
-	"https://ourgcrelief.com"
+	"https://ourgcrelief.com",
+	"https://www.ourgcrelief.com",
 ]
 
 # Celery Configuration
