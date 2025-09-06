@@ -53,8 +53,23 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{% url 'home' %}">
-                <i class="bi bi-heart-fill me-2"></i>Greatness Community Relief
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="{% url 'home' %}">
+                <div class="partner-logos d-flex align-items-center">
+                    <div class="primary-brand d-flex align-items-center">
+                        <i class="bi bi-heart-fill me-2"></i>
+                        <span class="brand-text">Greatness Community Relief</span>
+                    </div>
+                    <div class="logo-divider mx-2 d-none d-md-block text-primary">
+                        <i class="bi bi-plus-circle"></i>
+                    </div>
+                    <div class="partner-brand d-flex align-items-center">
+                        <div class="elevation-logo me-2">
+                            <img src="{% static 'images/tec-logo.png' %}" alt="The Elevation Church" class="tec-logo-img-main">
+                        </div>
+                        <span class="brand-text d-none d-lg-inline">The Elevation Church</span>
+                        <span class="brand-text-short d-lg-none d-md-inline">Elevation</span>
+                    </div>
+                </div>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

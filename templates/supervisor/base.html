@@ -21,8 +21,24 @@
     <!-- Top Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'supervisor_dashboard' %}">
-                <i class="bi bi-shield-check me-2"></i>GC Relief Supervisor
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'supervisor_dashboard' %}">
+                <div class="partner-logos d-flex align-items-center">
+                    <div class="primary-brand d-flex align-items-center">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <span class="brand-text">GC Relief</span>
+                    </div>
+                    <div class="logo-divider mx-2 d-none d-md-block">
+                        <i class="bi bi-plus-circle text-white-50"></i>
+                    </div>
+                    <div class="partner-brand d-flex align-items-center">
+                        <div class="elevation-logo me-2">
+                            <img src="{% static 'images/tec-logo.png' %}" alt="The Elevation Church" class="tec-logo-img">
+                        </div>
+                        <span class="brand-text d-none d-lg-inline">The Elevation Church</span>
+                        <span class="brand-text-short d-lg-none d-md-inline">Elevation</span>
+                    </div>
+                </div>
+                <span class="supervisor-text d-none d-sm-inline ms-2 text-white-50">| Supervisor</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -30,6 +46,36 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Mobile Navigation Menu (visible on small screens) -->
+                <ul class="navbar-nav me-auto d-md-none">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_dashboard' %}active{% endif %}" 
+                           href="{% url 'supervisor_dashboard' %}">
+                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_applications' %}active{% endif %}" 
+                           href="{% url 'supervisor_applications' %}">
+                            <i class="bi bi-file-text me-2"></i>Applications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_schedule' %}active{% endif %}" 
+                           href="{% url 'supervisor_schedule' %}">
+                            <i class="bi bi-calendar-check me-2"></i>Pickup Schedule
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'supervisor_scanner' %}active{% endif %}" 
+                           href="{% url 'supervisor_scanner' %}">
+                            <i class="bi bi-qr-code-scan me-2"></i>QR Scanner
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider border-light"></li>
+                </ul>
+                
+                <!-- Desktop Navigation (notifications & user menu) -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" 
@@ -49,11 +95,13 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle me-1"></i>
-                            {% if user.get_full_name %}
-                                {{ user.get_full_name }}
-                            {% else %}
-                                {{ user.username }}
-                            {% endif %}
+                            <span class="d-none d-sm-inline">
+                                {% if user.get_full_name %}
+                                    {{ user.get_full_name }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>My Profile</a></li>
