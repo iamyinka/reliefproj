@@ -80,6 +80,60 @@
     }
 }
 
+/* Footer Partner Logo Styles */
+.partner-logo-footer {
+    height: 60px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.partner-logo-footer:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* Footer Partnership Section */
+footer .border-bottom {
+    border-color: var(--border-color) !important;
+}
+
+footer h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive footer adjustments */
+@media (max-width: 768px) {
+    .partner-logo-footer {
+        height: 50px;
+        max-width: 150px;
+    }
+    
+    footer .text-md-end {
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .partner-logo-footer {
+        height: 40px;
+        max-width: 120px;
+    }
+    
+    footer .d-flex {
+        flex-direction: column;
+        text-align: center;
+        align-items: center !important;
+    }
+    
+    footer .d-flex .partner-logo-footer {
+        margin-bottom: 0.5rem;
+        margin-right: 0 !important;
+    }
+}
+
 /* Typography */
 body {
     font-family: 'Signika Negative', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
