@@ -17,6 +17,12 @@ class PackageManagementView(generics.ListCreateAPIView):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Only allow staff users to access this endpoint
+        if not self.request.user.is_staff:
+            return Package.objects.none()
+        return super().get_queryset()
 
 
 class PackageDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -24,12 +30,25 @@ class PackageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Only allow staff users to access this endpoint
+        if not self.request.user.is_staff:
+            return Package.objects.none()
+        return super().get_queryset()
 
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def restock_package(request, package_id):
     """Add stock to a package"""
+    # Only allow staff users to restock packages
+    if not request.user.is_staff:
+        return Response({
+            'success': False,
+            'message': 'Staff privileges required.'
+        }, status=403)
+        
     try:
         package = Package.objects.get(id=package_id)
         quantity = int(request.data.get('quantity', 0))

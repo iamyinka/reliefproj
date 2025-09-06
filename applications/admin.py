@@ -17,7 +17,7 @@ class ApplicationAdmin(admin.ModelAdmin):
         }),
         ('Family Details', {
             'fields': ['family_size', 'children_count', 'elderly_count', 'employment_status', 
-                      'special_needs', 'situation_description']
+                      'special_needs', 'tec_member']
         }),
         ('Package Selection', {
             'fields': ['selected_package', 'package_flexibility']

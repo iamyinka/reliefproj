@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.relief_app_context',
             ],
         },
     },
@@ -178,12 +179,12 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
 # Cache Configuration
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': config('CACHE_URL', default='redis://127.0.0.1:6379/1'),
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+#         'LOCATION': config('CACHE_URL', default='redis://127.0.0.1:6379/1'),
+#     }
+# }
 
 # Relief App Configuration
 RELIEF_APP_CONFIG = {
@@ -192,6 +193,13 @@ RELIEF_APP_CONFIG = {
     'LOW_STOCK_THRESHOLD': config('LOW_STOCK_THRESHOLD', default=10, cast=int),
     'PICKUP_REMINDER_HOURS': [24, 2],   # Reminder hours before pickup
     'AUTO_APPROVE_EMERGENCY': False,     # Auto-approve emergency applications
+}
+
+# Contact Information
+CONTACT_INFO = {
+    'phone': config('CONTACT_PHONE', default=''),
+    'email': config('CONTACT_EMAIL', default=''),
+    'organization_name': config('ORGANIZATION_NAME', default='Greatness Community Relief'),
 }
 
 # Email Configuration
@@ -204,15 +212,37 @@ SMS_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'file': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'relief_app.log',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'relief_app.log',
+            'maxBytes': 1024*1024*5,  # 5MB
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+        'error_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler', 
+            'filename': BASE_DIR / 'logs' / 'relief_errors.log',
+            'maxBytes': 1024*1024*5,  # 5MB
+            'backupCount': 3,
+            'formatter': 'verbose',
         },
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
         },
     },
     'loggers': {
@@ -222,9 +252,23 @@ LOGGING = {
             'propagate': True,
         },
         'relief_app': {
-            'handlers': ['file', 'console'],
+            'handlers': ['file', 'error_file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'packages': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'applications': {
+            'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,
         },
     },
 }
+
+# Create logs directory if it doesn't exist
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)

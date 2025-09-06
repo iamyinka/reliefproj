@@ -19,44 +19,81 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import reverse_lazy
+from core import views
 
-# Mock views for static pages
-class HomeView(TemplateView):
-    template_name = 'pages/home.html'
+# Staff-only access mixin
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Mixin to require staff authentication for supervisor pages"""
+    login_url = reverse_lazy('staff_login')
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return super().handle_no_permission()
+        # User is authenticated but not staff
+        from django.contrib import messages
+        from django.shortcuts import redirect
+        messages.error(self.request, 'Access denied. Staff privileges required.')
+        return redirect('home')
 
-class PackagesView(TemplateView):
-    template_name = 'pages/packages.html'
-
-class ApplyView(TemplateView):
-    template_name = 'pages/apply.html'
-
-class StatusView(TemplateView):
-    template_name = 'pages/status.html'
-
-class PickupView(TemplateView):
-    template_name = 'pages/pickup.html'
-
-# Supervisor views
-class SupervisorDashboardView(TemplateView):
+# Supervisor views with staff authentication
+class SupervisorDashboardView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/dashboard.html'
 
-class SupervisorApplicationsView(TemplateView):
+class SupervisorApplicationsView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/applications.html'
 
-class SupervisorPackagesView(TemplateView):
+class SupervisorPackagesView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/packages.html'
 
-class SupervisorScheduleView(TemplateView):
+class SupervisorScheduleView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/schedule.html'
 
-class SupervisorScannerView(TemplateView):
+class SupervisorScannerView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/scanner.html'
 
-class SupervisorReportsView(TemplateView):
+class SupervisorReportsView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/reports.html'
 
-class SupervisorNotificationsView(TemplateView):
+class SupervisorNotificationsView(StaffRequiredMixin, TemplateView):
     template_name = 'supervisor/notifications.html'
+
+# Custom staff login view
+class StaffLoginView(LoginView):
+    template_name = 'auth/staff_login.html'
+    redirect_authenticated_user = True
+    
+    def get_success_url(self):
+        # Redirect staff users to supervisor dashboard
+        if self.request.user.is_staff:
+            return reverse_lazy('supervisor_dashboard')
+        # Regular users go to home
+        return reverse_lazy('home')
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Check if user is staff after login
+        if not self.request.user.is_staff:
+            from django.contrib import messages
+            messages.warning(self.request, 'You need staff privileges to access the supervisor area.')
+        return response
+
+# Simple function-based logout view
+def logout_view(request):
+    from django.contrib.auth import logout
+    from django.contrib import messages
+    from django.shortcuts import redirect
+    
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, 'You have been successfully logged out.')
+    
+    return redirect('home')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -67,12 +104,16 @@ urlpatterns = [
     path('api/pickups/', include('pickups.urls')),
     path('api/auth/', include('rest_framework.urls')),
     
+    # Authentication routes
+    path('staff-login/', StaffLoginView.as_view(), name='staff_login'),
+    path('logout/', logout_view, name='logout'),
+    
     # Frontend routes
-    path('', HomeView.as_view(), name='home'),
-    path('packages/', PackagesView.as_view(), name='packages'),
-    path('apply/', ApplyView.as_view(), name='apply'),
-    path('status/', StatusView.as_view(), name='status'),
-    path('pickup/', PickupView.as_view(), name='pickup'),
+    path('', views.home, name='home'),
+    path('packages/', views.packages, name='packages'),
+    path('apply/', views.apply, name='apply'),
+    path('status/', views.status, name='status'),
+    path('pickup/', views.pickup, name='pickup'),
     
     # Supervisor routes
     path('supervisor/', SupervisorDashboardView.as_view(), name='supervisor_dashboard'),

@@ -129,137 +129,52 @@
         </div>
         
         <div class="row g-4">
-            <!-- Small Family Package -->
+            {% for package in featured_packages %}
             <div class="col-lg-4 col-md-6">
                 <div class="package-card card h-100">
                     <div class="stock-badge">
-                        <span class="badge bg-success">Available</span>
+                        <span class="badge {{ package.stock_badge_class }}">{{ package.stock_badge_text }}</span>
                     </div>
-                    <div class="card-header text-center">
-                        <h5 class="card-title mb-0">Small Family Package</h5>
-                        <small>For families of 1-3 members</small>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center mb-3">
-                            <span class="price-tag">₦5,000</span>
-                            <small class="text-muted d-block">+ Food Items</small>
-                        </div>
-                        
-                        <div class="package-items">
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>5kg Rice</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>2kg Beans</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>1L Vegetable Oil</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>1kg Salt</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>Cash Support: ₦5,000</span>
-                            </div>
-                        </div>
-                        
-                        <a href="{% url 'apply' %}" class="btn btn-primary w-100">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Medium Family Package -->
-            <div class="col-lg-4 col-md-6">
-                <div class="package-card card h-100">
-                    <div class="stock-badge">
-                        <span class="badge bg-success">Available</span>
-                    </div>
-                    <div class="card-header text-center">
-                        <h5 class="card-title mb-0">Medium Family Package</h5>
-                        <small>For families of 4-6 members</small>
+                    <div class="card-header text-center{% if package.card_header_class %} {{ package.card_header_class }}{% endif %}">
+                        <h5 class="card-title mb-0">{{ package.name }}</h5>
+                        <small{% if not package.card_header_class %} class="text-warning"{% endif %}>{{ package.family_size_text }}</small>
                     </div>
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <span class="price-tag">₦8,000</span>
-                            <small class="text-muted d-block">+ Food Items</small>
+                            <span class="price-tag">₦{{ package.cash_amount|floatformat:0 }}</span>
+                            <small class="text-muted d-block">Cash + Food Items</small>
                         </div>
                         
                         <div class="package-items">
+                            {% for item_key, item_value in package.items_included.items %}
                             <div class="item">
                                 <i class="bi bi-check-circle-fill"></i>
-                                <span>10kg Rice</span>
+                                <span>{{ item_value|title }}</span>
                             </div>
+                            {% endfor %}
                             <div class="item">
                                 <i class="bi bi-check-circle-fill"></i>
-                                <span>5kg Beans</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>2L Vegetable Oil</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>1kg Salt, 1kg Sugar</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>Cash Support: ₦8,000</span>
+                                <span>Cash: ₦{{ package.cash_amount|floatformat:0 }}</span>
                             </div>
                         </div>
                         
-                        <a href="{% url 'apply' %}" class="btn btn-primary w-100">Apply Now</a>
+                        {% if package.is_available %}
+                            <a href="{% url 'apply' %}" class="btn btn-primary w-100">Apply Now</a>
+                        {% else %}
+                            <button class="btn btn-secondary w-100" disabled>Currently Unavailable</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            
-            <!-- Large Family Package -->
-            <div class="col-lg-4 col-md-6">
-                <div class="package-card card h-100">
-                    <div class="stock-badge">
-                        <span class="badge bg-warning">Limited</span>
-                    </div>
-                    <div class="card-header text-center">
-                        <h5 class="card-title mb-0">Large Family Package</h5>
-                        <small>For families of 7+ members</small>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center mb-3">
-                            <span class="price-tag">₦12,000</span>
-                            <small class="text-muted d-block">+ Food Items</small>
-                        </div>
-                        
-                        <div class="package-items">
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>25kg Rice</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>10kg Beans</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>3L Vegetable Oil</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>2kg Salt, 2kg Sugar</span>
-                            </div>
-                            <div class="item">
-                                <i class="bi bi-check-circle-fill"></i>
-                                <span>Cash Support: ₦12,000</span>
-                            </div>
-                        </div>
-                        
-                        <a href="{% url 'apply' %}" class="btn btn-primary w-100">Apply Now</a>
-                    </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-gift display-4 text-muted mb-3"></i>
+                    <h4 class="text-muted">No packages available</h4>
+                    <p class="text-muted">Please check back later for available relief packages.</p>
                 </div>
             </div>
+            {% endfor %}
         </div>
         
         <div class="text-center mt-5">

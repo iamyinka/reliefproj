@@ -30,7 +30,11 @@ class Application(TimeStampedModel):
     elderly_count = models.CharField(max_length=10, default='0')
     employment_status = models.CharField(max_length=50)
     special_needs = models.TextField(blank=True)
-    situation_description = models.TextField()
+    tec_member = models.CharField(
+        max_length=3, 
+        choices=[('yes', 'Yes'), ('no', 'No')],
+        help_text='Member of The Elevation Church (TEC), Ibadan'
+    )
     
     # Step 3: Package Selection
     selected_package = models.CharField(max_length=50)

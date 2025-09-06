@@ -28,40 +28,40 @@
 <div class="row mb-4">
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card primary">
-            <span class="stat-number">5</span>
+            <span class="stat-number" id="dash-pending-apps">---</span>
             <h6 class="mb-0">Pending Applications</h6>
-            <div class="metric-change negative">
-                <i class="bi bi-arrow-down"></i> 2 from yesterday
+            <div class="metric-change" id="dash-pending-change">
+                <i class="bi bi-clock"></i> Loading...
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card success">
-            <span class="stat-number">12</span>
+            <span class="stat-number" id="dash-today-pickups">---</span>
             <h6 class="mb-0">Today's Pickups</h6>
-            <div class="metric-change positive">
-                <i class="bi bi-arrow-up"></i> 3 from yesterday
+            <div class="metric-change" id="dash-pickups-change">
+                <i class="bi bi-clock"></i> Loading...
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card info">
-            <span class="stat-number">8</span>
+            <span class="stat-number" id="dash-active-packages">---</span>
             <h6 class="mb-0">Active Packages</h6>
-            <div class="metric-change">
-                <i class="bi bi-dash"></i> No change
+            <div class="metric-change" id="dash-packages-change">
+                <i class="bi bi-clock"></i> Loading...
             </div>
         </div>
     </div>
     
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card warning">
-            <span class="stat-number">3</span>
+            <span class="stat-number" id="dash-low-stock">---</span>
             <h6 class="mb-0">Low Stock Alerts</h6>
-            <div class="metric-change negative">
-                <i class="bi bi-exclamation-triangle"></i> Needs attention
+            <div class="metric-change" id="dash-stock-change">
+                <i class="bi bi-clock"></i> Loading...
             </div>
         </div>
     </div>
@@ -77,58 +77,11 @@
                     <a href="{% url 'supervisor_applications' %}" class="btn btn-sm btn-outline-primary">View All</a>
                 </div>
             </div>
-            <div class="card-body">
-                <!-- Application Item -->
-                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-                    <div>
-                        <h6 class="mb-1">John Doe <span class="badge bg-danger ms-2">EMERGENCY</span></h6>
-                        <small class="text-muted">APP-001 • Medium Family Basic • 30 minutes ago</small>
-                    </div>
-                    <div class="btn-group">
-                        <button class="action-btn approve" data-app-id="APP-001">Approve</button>
-                        <button class="action-btn view" data-app-id="APP-001">View</button>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-                    <div>
-                        <h6 class="mb-1">Jane Smith</h6>
-                        <small class="text-muted">APP-002 • Small Family Basic • 1 hour ago</small>
-                    </div>
-                    <div class="btn-group">
-                        <button class="action-btn approve" data-app-id="APP-002">Approve</button>
-                        <button class="action-btn view" data-app-id="APP-002">View</button>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-                    <div>
-                        <h6 class="mb-1">Michael Johnson</h6>
-                        <small class="text-muted">APP-003 • Large Family Basic • 2 hours ago</small>
-                    </div>
-                    <span class="application-status status-approved">Approved</span>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-                    <div>
-                        <h6 class="mb-1">Sarah Williams</h6>
-                        <small class="text-muted">APP-004 • Senior Citizen Special • 3 hours ago</small>
-                    </div>
-                    <div class="btn-group">
-                        <button class="action-btn approve" data-app-id="APP-004">Approve</button>
-                        <button class="action-btn view" data-app-id="APP-004">View</button>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-3">
-                    <div>
-                        <h6 class="mb-1">David Brown</h6>
-                        <small class="text-muted">APP-005 • Medium Family Premium • 4 hours ago</small>
-                    </div>
-                    <div class="btn-group">
-                        <button class="action-btn approve" data-app-id="APP-005">Approve</button>
-                        <button class="action-btn view" data-app-id="APP-005">View</button>
-                    </div>
+            <div class="card-body" id="recentApplicationsContainer">
+                <!-- Loading state -->
+                <div class="text-center py-4" id="recentAppsLoading">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Loading recent applications...</p>
                 </div>
             </div>
         </div>
@@ -139,258 +92,832 @@
             <div class="card-header">
                 <h5 class="mb-0">Priority Alerts</h5>
             </div>
-            <div class="card-body">
-                <!-- Alert Item -->
-                <div class="notification-item">
-                    <div class="d-flex align-items-start">
-                        <div class="notification-icon warning">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Low Stock Alert</h6>
-                            <p class="mb-1 small">Medium Family Basic package has only 5 units remaining.</p>
-                            <small class="text-muted">10 minutes ago</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="notification-item">
-                    <div class="d-flex align-items-start">
-                        <div class="notification-icon success">
-                            <i class="bi bi-check-circle"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Emergency Application</h6>
-                            <p class="mb-1 small">John Doe's emergency application needs immediate review.</p>
-                            <small class="text-muted">30 minutes ago</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="notification-item">
-                    <div class="d-flex align-items-start">
-                        <div class="notification-icon info">
-                            <i class="bi bi-calendar-check"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1">Today's Schedule</h6>
-                            <p class="mb-1 small">12 pickups scheduled between 9 AM - 6 PM.</p>
-                            <small class="text-muted">1 hour ago</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-3">
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All Alerts</a>
+            <div class="card-body" id="priorityAlertsContainer">
+                <!-- Loading state -->
+                <div class="text-center py-4" id="alertsLoading">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2 text-muted">Loading priority alerts...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Package Status & Today's Schedule -->
-<div class="row mb-4">
-    <div class="col-lg-6">
-        <div class="dashboard-card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Package Stock Status</h5>
-                    <a href="{% url 'supervisor_packages' %}" class="btn btn-sm btn-outline-primary">Manage</a>
-                </div>
-            </div>
-            <div class="card-body">
-                <!-- Package Status Item -->
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                    <div>
-                        <span class="stock-indicator in-stock"></span>
-                        <strong>Small Family Basic</strong>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-success">25 Available</span>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                    <div>
-                        <span class="stock-indicator low-stock"></span>
-                        <strong>Medium Family Basic</strong>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-warning text-dark">5 Available</span>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                    <div>
-                        <span class="stock-indicator out-of-stock"></span>
-                        <strong>Large Family Basic</strong>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-danger">Out of Stock</span>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                    <div>
-                        <span class="stock-indicator in-stock"></span>
-                        <strong>Senior Citizen Special</strong>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-success">15 Available</span>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                    <div>
-                        <span class="stock-indicator low-stock"></span>
-                        <strong>Emergency Relief</strong>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-warning text-dark">8 Available</span>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center py-2">
-                    <div>
-                        <span class="stock-indicator low-stock"></span>
-                        <strong>Medium Family Premium</strong>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-warning text-dark">3 Available</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-6">
-        <div class="dashboard-card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Today's Pickup Schedule</h5>
-                    <a href="{% url 'supervisor_schedule' %}" class="btn btn-sm btn-outline-primary">Full Schedule</a>
-                </div>
-            </div>
-            <div class="card-body">
-                <!-- Pickup Slot -->
-                <div class="pickup-slot morning">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>9:00 AM - 12:00 PM</strong>
-                            <small class="d-block text-muted">Morning Session</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-info">4 Pickups</span>
-                        </div>
-                    </div>
-                    <div class="mt-2 small">
-                        <div>• Michael Johnson - Large Family Basic</div>
-                        <div>• Sarah Williams - Senior Special</div>
-                        <div>• David Brown - Medium Family Premium</div>
-                        <div>• 1 more...</div>
-                    </div>
-                </div>
-                
-                <div class="pickup-slot afternoon">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>12:00 PM - 3:00 PM</strong>
-                            <small class="d-block text-muted">Afternoon Session</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-info">5 Pickups</span>
-                        </div>
-                    </div>
-                    <div class="mt-2 small">
-                        <div>• Grace Adams - Small Family Basic</div>
-                        <div>• Peter Wilson - Emergency Relief</div>
-                        <div>• Mary Jones - Medium Family Basic</div>
-                        <div>• 2 more...</div>
-                    </div>
-                </div>
-                
-                <div class="pickup-slot evening">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>3:00 PM - 6:00 PM</strong>
-                            <small class="d-block text-muted">Evening Session</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-info">3 Pickups</span>
-                        </div>
-                    </div>
-                    <div class="mt-2 small">
-                        <div>• Robert Taylor - Medium Family Basic</div>
-                        <div>• Lisa Davis - Small Family Premium</div>
-                        <div>• James Miller - Senior Special</div>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-3">
-                    <button class="btn btn-success btn-sm" onclick="window.location.href='{% url 'supervisor_scanner' %}'">
-                        <i class="bi bi-qr-code-scan me-1"></i>Start QR Scanner
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Quick Actions -->
-<div class="row">
-    <div class="col-12">
-        <div class="dashboard-card">
-            <div class="card-header">
-                <h5 class="mb-0">Quick Actions</h5>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <button class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
-                                style="min-height: 100px;" data-bs-toggle="modal" data-bs-target="#newPackageModal">
-                            <i class="bi bi-plus-circle mb-2" style="font-size: 2rem;"></i>
-                            <span>Create Package</span>
-                        </button>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
-                                style="min-height: 100px;" onclick="quickApproveNext()">
-                            <i class="bi bi-check-circle mb-2" style="font-size: 2rem;"></i>
-                            <span>Quick Approve</span>
-                        </button>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
-                                style="min-height: 100px;" onclick="window.location.href='{% url 'supervisor_scanner' %}'">
-                            <i class="bi bi-qr-code-scan mb-2" style="font-size: 2rem;"></i>
-                            <span>Scan QR Code</span>
-                        </button>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center" 
-                                style="min-height: 100px;" onclick="window.location.href='{% url 'supervisor_reports' %}'">
-                            <i class="bi bi-bar-chart mb-2" style="font-size: 2rem;"></i>
-                            <span>View Reports</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Set page identifier for JavaScript
-    document.body.dataset.page = 'dashboard';
+class SupervisorDashboard {
+    constructor() {
+        this.init();
+    }
     
-    // Auto-refresh dashboard every 5 minutes
-    setInterval(function() {
-        // In a real app, this would refresh the data
-        console.log('Dashboard auto-refresh');
-    }, 300000);
+    init() {
+        document.body.dataset.page = 'dashboard';
+        this.loadDashboardData();
+        
+        // Auto-refresh every 5 minutes
+        setInterval(() => this.loadDashboardData(), 300000);
+        
+        // Set up action buttons
+        this.setupActionButtons();
+    }
+    
+    async loadDashboardData() {
+        try {
+            await Promise.all([
+                this.loadApplications(),
+                this.loadStats()
+            ]);
+        } catch (error) {
+            console.error('Dashboard loading error:', error);
+            this.showError('Failed to load dashboard data. Please refresh the page.');
+        }
+    }
+    
+    async loadApplications() {
+        try {
+            const response = await fetch('/api/applications/list/', {
+                headers: {
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                }
+            });
+            
+            if (response.status === 401) {
+                this.showAuthError();
+                return;
+            }
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            this.updateApplicationsList(data.results || data);
+        } catch (error) {
+            console.error('Applications loading error:', error);
+            // Show mock data if API fails
+            this.updateApplicationsList([]);
+        }
+    }
+    
+    async loadStats() {
+        // For now, we'll calculate stats from applications
+        // In future, create a dedicated stats endpoint
+        try {
+            const response = await fetch('/api/applications/list/', {
+                headers: {
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                }
+            });
+            
+            if (response.status === 401) {
+                return; // Already handled in loadApplications
+            }
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.updateStats(data.results || data);
+            }
+        } catch (error) {
+            console.error('Stats loading error:', error);
+        }
+    }
+    
+    updateApplicationsList(applications) {
+        const container = document.querySelector('.dashboard-card .card-body');
+        if (!container) return;
+        
+        if (applications.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="bi bi-inbox display-4 text-muted mb-3"></i>
+                    <h6 class="text-muted">No Recent Applications</h6>
+                    <p class="small text-muted">New applications will appear here</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Sort by creation date (newest first)
+        applications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        // Show only the 5 most recent
+        const recentApplications = applications.slice(0, 5);
+        
+        const applicationsHtml = recentApplications.map(app => {
+            const timeAgo = this.getTimeAgo(app.created_at);
+            const statusBadge = this.getStatusBadge(app.status);
+            const packageName = this.getPackageName(app.selected_package);
+            
+            return `
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">
+                            ${app.first_name} ${app.last_name}
+                            ${app.employment_status === 'unemployed' ? '<span class="badge bg-danger ms-2">PRIORITY</span>' : ''}
+                        </h6>
+                        <small class="text-muted">
+                            ${app.reference_number} • ${packageName} • ${timeAgo}
+                        </small>
+                    </div>
+                    <div class="btn-group">
+                        ${app.status === 'PENDING' ? `
+                            <button class="action-btn approve" data-app-id="${app.id}">Approve</button>
+                            <button class="action-btn reject" data-app-id="${app.id}">Reject</button>
+                        ` : statusBadge}
+                        <button class="action-btn view" data-app-id="${app.id}">View</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = applicationsHtml;
+    }
+    
+    updateStats(applications) {
+        const pendingCount = applications.filter(app => app.status === 'PENDING').length;
+        const approvedToday = applications.filter(app => {
+            const today = new Date().toDateString();
+            return app.status === 'APPROVED' && new Date(app.reviewed_at).toDateString() === today;
+        }).length;
+        const activePackages = applications.filter(app => app.status === 'APPROVED').length;
+        
+        // Update stat cards
+        this.updateStatCard(0, pendingCount, 'Pending Applications');
+        this.updateStatCard(1, approvedToday, "Today's Approvals");
+        this.updateStatCard(2, activePackages, 'Active Packages');
+    }
+    
+    updateStatCard(index, value, label) {
+        const statCards = document.querySelectorAll('.stat-card .stat-number');
+        if (statCards[index]) {
+            statCards[index].textContent = value;
+        }
+        
+        const statLabels = document.querySelectorAll('.stat-card h6');
+        if (statLabels[index]) {
+            statLabels[index].textContent = label;
+        }
+    }
+    
+    setupActionButtons() {
+        document.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('action-btn')) {
+                const appId = e.target.dataset.appId;
+                const action = e.target.classList.contains('approve') ? 'approve' : 
+                             e.target.classList.contains('reject') ? 'reject' : 'view';
+                
+                if (action === 'approve') {
+                    await this.approveApplication(appId, e.target);
+                } else if (action === 'reject') {
+                    await this.rejectApplication(appId, e.target);
+                } else if (action === 'view') {
+                    window.location.href = `/supervisor/applications/?app=${appId}`;
+                }
+            }
+        });
+    }
+    
+    async approveApplication(appId, button) {
+        const originalText = button.innerHTML;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        button.disabled = true;
+        
+        try {
+            const response = await fetch(`/api/applications/${appId}/approve/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({ notes: 'Approved via dashboard' })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Application approved successfully!', 'success');
+                this.loadDashboardData(); // Refresh data
+            } else {
+                this.showNotification(result.message || 'Approval failed', 'error');
+            }
+        } catch (error) {
+            console.error('Approval error:', error);
+            this.showNotification('Network error. Please try again.', 'error');
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+    
+    async rejectApplication(appId, button) {
+        const reason = prompt('Please provide a reason for rejection:');
+        if (!reason) return;
+        
+        const originalText = button.innerHTML;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        button.disabled = true;
+        
+        try {
+            const response = await fetch(`/api/applications/${appId}/reject/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({ notes: reason })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Application rejected', 'info');
+                this.loadDashboardData(); // Refresh data
+            } else {
+                this.showNotification(result.message || 'Rejection failed', 'error');
+            }
+        } catch (error) {
+            console.error('Rejection error:', error);
+            this.showNotification('Network error. Please try again.', 'error');
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+    
+    getStatusBadge(status) {
+        const statusClasses = {
+            'PENDING': 'bg-warning text-dark',
+            'APPROVED': 'bg-success',
+            'REJECTED': 'bg-danger',
+            'PICKED_UP': 'bg-primary'
+        };
+        const statusNames = {
+            'PENDING': 'Under Review',
+            'APPROVED': 'Approved',
+            'REJECTED': 'Rejected',
+            'PICKED_UP': 'Collected'
+        };
+        
+        return `<span class="badge ${statusClasses[status] || 'bg-secondary'}">${statusNames[status] || status}</span>`;
+    }
+    
+    getPackageName(packageType) {
+        const packageNames = {
+            'small_basic': 'Small Family Basic',
+            'medium_basic': 'Medium Family Basic',
+            'large_basic': 'Large Family Basic',
+            'emergency': 'Emergency Relief',
+            'senior': 'Senior Citizen Special'
+        };
+        return packageNames[packageType] || packageType;
+    }
+    
+    getTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+        
+        if (diffInHours < 1) return 'Just now';
+        if (diffInHours === 1) return '1 hour ago';
+        if (diffInHours < 24) return `${diffInHours} hours ago`;
+        
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays === 1) return '1 day ago';
+        return `${diffInDays} days ago`;
+    }
+    
+    showNotification(message, type = 'info') {
+        // Create a simple toast notification
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <span>${message}</span>
+                <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+    
+    showError(message) {
+        this.showNotification(message, 'error');
+    }
+    
+    showAuthError() {
+        this.showNotification('Authentication required. Please log in to continue.', 'error');
+        // In a real app, redirect to login
+        console.log('Authentication required - redirect to login');
+    }
+    
+    getAuthToken() {
+        // For now, return empty string - in production this would get from localStorage/session
+        return '';
+    }
+    
+    getCSRFToken() {
+        const cookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        return cookie ? cookie.split('=')[1] : '';
+    }
+}
+
+// Quick approve function for the quick actions button
+window.quickApproveNext = async function() {
+    const dashboard = window.supervisorDashboard;
+    if (!dashboard) return;
+    
+    try {
+        const response = await fetch('/api/applications/list/?status=PENDING&limit=1', {
+            headers: {
+                'Authorization': `Bearer ${dashboard.getAuthToken()}`,
+                'X-CSRFToken': dashboard.getCSRFToken()
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const applications = data.results || data;
+            
+            if (applications.length > 0) {
+                const nextApp = applications[0];
+                if (confirm(`Approve application for ${nextApp.first_name} ${nextApp.last_name} (${nextApp.reference_number})?`)) {
+                    await dashboard.approveApplication(nextApp.id, { 
+                        innerHTML: 'Quick Approve', 
+                        disabled: false 
+                    });
+                }
+            } else {
+                dashboard.showNotification('No pending applications to approve', 'info');
+            }
+        }
+    } catch (error) {
+        console.error('Quick approve error:', error);
+        dashboard.showNotification('Failed to load pending applications', 'error');
+    }
+};
+
+// Initialize dashboard when DOM loads
+document.addEventListener('DOMContentLoaded', function() {
+    window.supervisorDashboard = new SupervisorDashboard();
+    loadDashboardMetrics();
 });
+
+// Load real dashboard metrics
+async function loadDashboardMetrics() {
+    try {
+        // Load applications data
+        const appsResponse = await fetch('/api/applications/list/');
+        const packagesResponse = await fetch('/api/packages/manage/');
+        
+        if (appsResponse.ok) {
+            const applicationsData = await appsResponse.json();
+            const applications = Array.isArray(applicationsData) ? applicationsData : applicationsData.results || [];
+            
+            // Calculate metrics
+            const pendingApps = applications.filter(app => app.status === 'PENDING').length;
+            const today = new Date().toISOString().split('T')[0];
+            const todayPickups = applications.filter(app => 
+                app.preferred_date === today && 
+                (app.status === 'APPROVED' || app.status === 'PICKED_UP')
+            ).length;
+            
+            // Update pending applications
+            document.getElementById('dash-pending-apps').textContent = pendingApps;
+            document.getElementById('dash-pending-change').innerHTML = 
+                '<i class="bi bi-info-circle"></i> Real-time data';
+                
+            // Update today's pickups
+            document.getElementById('dash-today-pickups').textContent = todayPickups;
+            document.getElementById('dash-pickups-change').innerHTML = 
+                '<i class="bi bi-calendar-check"></i> Scheduled today';
+        }
+        
+        if (packagesResponse.ok) {
+            const packages = await packagesResponse.json();
+            const packagesArray = Array.isArray(packages) ? packages : packages.results || [];
+            
+            const activePackages = packagesArray.filter(pkg => pkg.is_active).length;
+            const lowStockPackages = packagesArray.filter(pkg => pkg.is_low_stock).length;
+            
+            // Update active packages
+            document.getElementById('dash-active-packages').textContent = activePackages;
+            document.getElementById('dash-packages-change').innerHTML = 
+                '<i class="bi bi-check-circle"></i> Currently active';
+                
+            // Update low stock alerts
+            document.getElementById('dash-low-stock').textContent = lowStockPackages;
+            document.getElementById('dash-stock-change').innerHTML = 
+                lowStockPackages > 0 ? 
+                '<i class="bi bi-exclamation-triangle"></i> Needs restocking' : 
+                '<i class="bi bi-check-circle"></i> All stocked';
+        }
+        
+        console.log('Dashboard metrics loaded successfully');
+        
+        // Load recent applications, priority alerts, and pickup schedule
+        loadRecentApplications();
+        loadPriorityAlerts();
+        loadTodayPickupSchedule();
+    } catch (error) {
+        console.error('Error loading dashboard metrics:', error);
+        // Set fallback values
+        document.getElementById('dash-pending-apps').textContent = '0';
+        document.getElementById('dash-today-pickups').textContent = '0';
+        document.getElementById('dash-active-packages').textContent = '0';
+        document.getElementById('dash-low-stock').textContent = '0';
+        
+        // Show error for recent applications
+        showRecentApplicationsError();
+    }
+}
+
+// Load recent applications dynamically
+async function loadRecentApplications() {
+    try {
+        const response = await fetch('/api/applications/list/');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        const applications = Array.isArray(data) ? data : data.results || [];
+        
+        // Get the 5 most recent applications
+        const recentApps = applications
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 5);
+        
+        displayRecentApplications(recentApps);
+    } catch (error) {
+        console.error('Error loading recent applications:', error);
+        showRecentApplicationsError();
+    }
+}
+
+function displayRecentApplications(applications) {
+    const container = document.getElementById('recentApplicationsContainer');
+    if (!container) return;
+    
+    if (applications.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-inbox display-4 text-muted mb-3"></i>
+                <h6 class="text-muted">No Recent Applications</h6>
+                <p class="text-muted">Applications will appear here when submitted</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const applicationsHtml = applications.map(app => {
+        const timeAgo = getTimeAgo(app.created_at);
+        const isEmergency = app.employment_status === 'unemployed';
+        const packageName = getPackageName(app.selected_package);
+        
+        return `
+            <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                <div>
+                    <h6 class="mb-1">
+                        ${app.first_name} ${app.last_name}
+                        ${isEmergency ? '<span class="badge bg-danger ms-2">EMERGENCY</span>' : ''}
+                    </h6>
+                    <small class="text-muted">${app.reference_number} • ${packageName} • ${timeAgo}</small>
+                </div>
+                ${app.status === 'APPROVED' ? 
+                    '<span class="application-status status-approved">Approved</span>' :
+                    `<div class="btn-group">
+                        <button class="action-btn approve" data-app-id="${app.id}">Approve</button>
+                        <button class="action-btn view" data-app-id="${app.id}">View</button>
+                    </div>`
+                }
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = applicationsHtml;
+}
+
+function showRecentApplicationsError() {
+    const container = document.getElementById('recentApplicationsContainer');
+    if (container) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning mb-3"></i>
+                <h6 class="text-muted">Unable to Load Applications</h6>
+                <p class="text-muted">Please refresh the page or check your connection</p>
+            </div>
+        `;
+    }
+}
+
+function getTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+    
+    if (diffInMinutes < 1) return 'Just now';
+    if (diffInMinutes === 1) return '1 minute ago';
+    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours === 1) return '1 hour ago';
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays === 1) return '1 day ago';
+    return `${diffInDays} days ago`;
+}
+
+function getPackageName(packageType) {
+    const packageNames = {
+        'small_basic': 'Small Family Basic',
+        'medium_basic': 'Medium Family Basic', 
+        'large_basic': 'Large Family Basic',
+        'emergency': 'Emergency Relief',
+        'senior': 'Senior Citizen Special'
+    };
+    return packageNames[packageType] || packageType;
+}
+
+// Load priority alerts dynamically
+async function loadPriorityAlerts() {
+    try {
+        const [appsResponse, packagesResponse] = await Promise.all([
+            fetch('/api/applications/list/'),
+            fetch('/api/packages/manage/')
+        ]);
+        
+        const alerts = [];
+        let applications = [];
+        
+        // Process applications data once
+        if (appsResponse.ok) {
+            const appsData = await appsResponse.json();
+            applications = Array.isArray(appsData) ? appsData : appsData.results || [];
+            
+            // Emergency applications alert
+            const emergencyApps = applications.filter(app => 
+                app.employment_status === 'unemployed' && app.status === 'PENDING'
+            );
+            
+            if (emergencyApps.length > 0) {
+                alerts.push({
+                    type: 'warning',
+                    icon: 'exclamation-triangle',
+                    title: 'Emergency Applications',
+                    message: `${emergencyApps.length} emergency application${emergencyApps.length > 1 ? 's' : ''} need${emergencyApps.length === 1 ? 's' : ''} immediate review.`,
+                    time: 'Priority',
+                    action: '/supervisor/applications/?filter=emergency'
+                });
+            }
+        }
+        
+        // Process packages data
+        if (packagesResponse.ok) {
+            const packagesData = await packagesResponse.json();
+            const packages = Array.isArray(packagesData) ? packagesData : packagesData.results || [];
+            
+            // Low stock alerts
+            const lowStockPackages = packages.filter(pkg => pkg.is_low_stock);
+            if (lowStockPackages.length > 0) {
+                alerts.push({
+                    type: 'warning',
+                    icon: 'box',
+                    title: 'Low Stock Alert',
+                    message: `${lowStockPackages.length} package type${lowStockPackages.length > 1 ? 's' : ''} running low on stock.`,
+                    time: 'Just now',
+                    action: '/supervisor/packages/'
+                });
+            }
+        }
+        
+        // Today's schedule alert - reuse applications data
+        const today = new Date().toISOString().split('T')[0];
+        if (applications.length > 0) {
+            const todayPickups = applications.filter(app => 
+                app.preferred_date === today && 
+                (app.status === 'APPROVED' || app.status === 'PICKED_UP')
+            ).length;
+            
+            if (todayPickups > 0) {
+                alerts.push({
+                    type: 'info',
+                    icon: 'calendar-check',
+                    title: "Today's Schedule",
+                    message: `${todayPickups} pickup${todayPickups > 1 ? 's' : ''} scheduled for today.`,
+                    time: 'Today',
+                    action: '/supervisor/schedule/'
+                });
+            }
+        }
+        
+        displayPriorityAlerts(alerts);
+    } catch (error) {
+        console.error('Error loading priority alerts:', error);
+        showPriorityAlertsError();
+    }
+}
+
+function displayPriorityAlerts(alerts) {
+    const container = document.getElementById('priorityAlertsContainer');
+    if (!container) return;
+    
+    if (alerts.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-shield-check display-4 text-success mb-3"></i>
+                <h6 class="text-muted">All Clear</h6>
+                <p class="text-muted">No priority alerts at this time</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const alertsHtml = alerts.map(alert => {
+        const iconClass = alert.type === 'warning' ? 'warning' : alert.type === 'info' ? 'info' : 'success';
+        
+        return `
+            <div class="notification-item">
+                <div class="d-flex align-items-start">
+                    <div class="notification-icon ${iconClass}">
+                        <i class="bi bi-${alert.icon}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${alert.title}</h6>
+                        <p class="mb-1 small">${alert.message}</p>
+                        <small class="text-muted">${alert.time}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = `
+        ${alertsHtml}
+        <div class="text-center mt-3">
+            <a href="/supervisor/notifications/" class="btn btn-sm btn-outline-primary">View All Alerts</a>
+        </div>
+    `;
+}
+
+function showPriorityAlertsError() {
+    const container = document.getElementById('priorityAlertsContainer');
+    if (container) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning mb-3"></i>
+                <h6 class="text-muted">Unable to Load Alerts</h6>
+                <p class="text-muted">Please refresh the page</p>
+            </div>
+        `;
+    }
+}
+
+// Load today's pickup schedule dynamically
+async function loadTodayPickupSchedule() {
+    try {
+        const response = await fetch('/api/applications/list/');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        const applications = Array.isArray(data) ? data : data.results || [];
+        
+        // Get today's date
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Filter applications scheduled for today that are approved
+        const todayPickups = applications.filter(app => 
+            app.preferred_date === today && 
+            (app.status === 'APPROVED' || app.status === 'PICKED_UP')
+        );
+        
+        // Group by time slots
+        const timeSlots = {
+            morning: { label: '9:00 AM - 12:00 PM', time: 'Morning Session', pickups: [] },
+            afternoon: { label: '12:00 PM - 3:00 PM', time: 'Afternoon Session', pickups: [] },
+            evening: { label: '3:00 PM - 6:00 PM', time: 'Evening Session', pickups: [] }
+        };
+        
+        // Categorize pickups by time preference
+        todayPickups.forEach(app => {
+            if (!app.preferred_time) {
+                // Default to morning if no time specified
+                timeSlots.morning.pickups.push(app);
+                return;
+            }
+            
+            const hour = parseInt(app.preferred_time.split(':')[0]);
+            if (hour >= 9 && hour < 12) {
+                timeSlots.morning.pickups.push(app);
+            } else if (hour >= 12 && hour < 15) {
+                timeSlots.afternoon.pickups.push(app);
+            } else {
+                timeSlots.evening.pickups.push(app);
+            }
+        });
+        
+        displayTodayPickupSchedule(timeSlots);
+        
+    } catch (error) {
+        console.error('Error loading today\'s pickup schedule:', error);
+        showPickupScheduleError();
+    }
+}
+
+function displayTodayPickupSchedule(timeSlots) {
+    const container = document.getElementById('todayPickupSchedule');
+    if (!container) return;
+    
+    const totalPickups = Object.values(timeSlots).reduce((sum, slot) => sum + slot.pickups.length, 0);
+    
+    if (totalPickups === 0) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                <h6 class="text-muted">No Pickups Scheduled</h6>
+                <p class="text-muted">No pickups scheduled for today</p>
+                <div class="text-center mt-3">
+                    <button class="btn btn-success btn-sm" onclick="window.location.href='/supervisor/scanner/'">
+                        <i class="bi bi-qr-code-scan me-1"></i>Start QR Scanner
+                    </button>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    const slotsHtml = Object.entries(timeSlots).map(([key, slot]) => {
+        const pickupsCount = slot.pickups.length;
+        if (pickupsCount === 0) return '';
+        
+        const pickupsDisplay = slot.pickups.slice(0, 3).map(app => 
+            `<div>• ${app.first_name} ${app.last_name} - ${getPackageName(app.selected_package)}</div>`
+        ).join('');
+        
+        const moreCount = pickupsCount > 3 ? pickupsCount - 3 : 0;
+        const moreText = moreCount > 0 ? `<div>• ${moreCount} more...</div>` : '';
+        
+        return `
+            <div class="pickup-slot ${key}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${slot.label}</strong>
+                        <small class="d-block text-muted">${slot.time}</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-info">${pickupsCount} Pickup${pickupsCount !== 1 ? 's' : ''}</span>
+                    </div>
+                </div>
+                <div class="mt-2 small">
+                    ${pickupsDisplay}
+                    ${moreText}
+                </div>
+            </div>
+        `;
+    }).filter(html => html !== '').join('');
+    
+    container.innerHTML = `
+        ${slotsHtml}
+        <div class="text-center mt-3">
+            <button class="btn btn-success btn-sm" onclick="window.location.href='/supervisor/scanner/'">
+                <i class="bi bi-qr-code-scan me-1"></i>Start QR Scanner
+            </button>
+        </div>
+    `;
+}
+
+function showPickupScheduleError() {
+    const container = document.getElementById('todayPickupSchedule');
+    if (container) {
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning mb-3"></i>
+                <h6 class="text-muted">Unable to Load Schedule</h6>
+                <p class="text-muted">Please refresh the page or check your connection</p>
+                <div class="text-center mt-3">
+                    <button class="btn btn-success btn-sm" onclick="window.location.href='/supervisor/scanner/'">
+                        <i class="bi bi-qr-code-scan me-1"></i>Start QR Scanner
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+}
 </script>
 {% endblock %}

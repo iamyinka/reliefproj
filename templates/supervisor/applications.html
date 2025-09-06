@@ -68,15 +68,15 @@
             <div class="card-body text-center">
                 <div class="row">
                     <div class="col-4">
-                        <div class="text-warning h4 mb-1">5</div>
+                        <div class="text-warning h4 mb-1" id="stat-card-pending">---</div>
                         <small class="text-muted">Pending</small>
                     </div>
                     <div class="col-4">
-                        <div class="text-success h4 mb-1">23</div>
+                        <div class="text-success h4 mb-1" id="stat-card-approved">---</div>
                         <small class="text-muted">Approved</small>
                     </div>
                     <div class="col-4">
-                        <div class="text-danger h4 mb-1">2</div>
+                        <div class="text-danger h4 mb-1" id="stat-card-rejected">---</div>
                         <small class="text-muted">Rejected</small>
                     </div>
                 </div>
@@ -89,19 +89,19 @@
 <div class="mb-3">
     <div class="btn-group" role="group">
         <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterAll" data-filter="all" autocomplete="off">
-        <label class="btn btn-outline-primary" for="filterAll">All (30)</label>
+        <label class="btn btn-outline-primary" for="filterAll" id="filterAllLabel">All (---)</label>
 
         <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterPending" data-filter="pending" autocomplete="off" checked>
-        <label class="btn btn-outline-warning" for="filterPending">Pending (5)</label>
+        <label class="btn btn-outline-warning" for="filterPending" id="filterPendingLabel">Pending (---)</label>
 
         <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterApproved" data-filter="approved" autocomplete="off">
-        <label class="btn btn-outline-success" for="filterApproved">Approved (23)</label>
+        <label class="btn btn-outline-success" for="filterApproved" id="filterApprovedLabel">Approved (---)</label>
 
         <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterRejected" data-filter="rejected" autocomplete="off">
-        <label class="btn btn-outline-danger" for="filterRejected">Rejected (2)</label>
+        <label class="btn btn-outline-danger" for="filterRejected" id="filterRejectedLabel">Rejected (---)</label>
 
         <input type="radio" class="btn-check filter-btn" name="filterRadio" id="filterEmergency" data-filter="emergency" autocomplete="off">
-        <label class="btn btn-outline-danger" for="filterEmergency">🚨 Emergency (1)</label>
+        <label class="btn btn-outline-danger" for="filterEmergency" id="filterEmergencyLabel">🚨 Emergency (---)</label>
     </div>
 </div>
 
@@ -207,14 +207,436 @@
 
 {% block extra_js %}
 <script>
+// Application Manager - Handles backend integration
+class ApplicationManager {
+    constructor() {
+        this.applications = [];
+        this.filteredApplications = [];
+        this.currentFilter = 'pending';
+        this.currentSort = 'date';
+        this.currentSearch = '';
+        
+        this.init();
+    }
+    
+    async init() {
+        await this.loadApplications();
+        this.setupEventListeners();
+        this.renderApplications();
+        this.updateStats();
+    }
+    
+    setupEventListeners() {
+        // Search functionality
+        const searchInput = document.getElementById('searchApplications');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.currentSearch = e.target.value;
+                this.applyFilters();
+            });
+        }
+        
+        // Status filter
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', (e) => {
+                this.currentFilter = e.target.value;
+                this.updateFilterButtons();
+                this.applyFilters();
+            });
+        }
+        
+        // Package filter
+        const packageFilter = document.getElementById('packageFilter');
+        if (packageFilter) {
+            packageFilter.addEventListener('change', () => {
+                this.applyFilters();
+            });
+        }
+        
+        // Sort functionality
+        const sortSelect = document.getElementById('sortApplications');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', (e) => {
+                this.currentSort = e.target.value;
+                this.applyFilters();
+            });
+        }
+        
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    this.currentFilter = e.target.dataset.filter;
+                    document.getElementById('statusFilter').value = this.currentFilter;
+                    this.applyFilters();
+                }
+            });
+        });
+    }
+    
+    async loadApplications() {
+        try {
+            const response = await fetch('/api/applications/list/', {
+                headers: {
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            this.applications = data.results || data || [];
+            console.log('Loaded applications:', this.applications.length);
+            
+        } catch (error) {
+            console.error('Error loading applications:', error);
+            this.showNotification('Failed to load applications. Please refresh the page.', 'error');
+            this.applications = [];
+        }
+    }
+    
+    applyFilters() {
+        let filtered = [...this.applications];
+        
+        // Apply status filter
+        if (this.currentFilter && this.currentFilter !== 'all') {
+            if (this.currentFilter === 'emergency') {
+                // Emergency filter: unemployed status or emergency package
+                filtered = filtered.filter(app => 
+                    app.employment_status === 'unemployed' || 
+                    app.selected_package === 'emergency'
+                );
+            } else {
+                filtered = filtered.filter(app => 
+                    app.status.toLowerCase() === this.currentFilter.toLowerCase()
+                );
+            }
+        }
+        
+        // Apply package filter
+        const packageFilter = document.getElementById('packageFilter')?.value;
+        if (packageFilter && packageFilter !== 'all') {
+            filtered = filtered.filter(app => 
+                app.selected_package.includes(packageFilter)
+            );
+        }
+        
+        // Apply search filter
+        if (this.currentSearch) {
+            const searchTerm = this.currentSearch.toLowerCase();
+            filtered = filtered.filter(app => 
+                `${app.first_name} ${app.last_name}`.toLowerCase().includes(searchTerm) ||
+                app.reference_number.toLowerCase().includes(searchTerm) ||
+                app.phone.includes(searchTerm) ||
+                this.getPackageName(app.selected_package).toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        // Apply sorting
+        this.sortApplications(filtered);
+        
+        this.filteredApplications = filtered;
+        this.renderApplications();
+        this.updateStats();
+    }
+    
+    sortApplications(applications) {
+        applications.sort((a, b) => {
+            switch (this.currentSort) {
+                case 'name':
+                    return `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`);
+                case 'priority':
+                    // Emergency (unemployed) first, then by date
+                    const aPriority = a.employment_status === 'unemployed' ? 1 : 0;
+                    const bPriority = b.employment_status === 'unemployed' ? 1 : 0;
+                    if (aPriority !== bPriority) return bPriority - aPriority;
+                    return new Date(b.created_at) - new Date(a.created_at);
+                case 'package':
+                    return this.getPackageName(a.selected_package).localeCompare(this.getPackageName(b.selected_package));
+                default: // date
+                    return new Date(b.created_at) - new Date(a.created_at);
+            }
+        });
+    }
+    
+    renderApplications() {
+        const container = document.getElementById('applicationsContainer');
+        if (!container) return;
+        
+        if (this.filteredApplications.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-4 text-muted mb-3"></i>
+                    <h6 class="text-muted">No Applications Found</h6>
+                    <p class="text-muted">Try adjusting your filters or search terms</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const applicationsHtml = this.filteredApplications.map(app => {
+            const timeAgo = this.getTimeAgo(app.created_at);
+            const packageName = this.getPackageName(app.selected_package);
+            const isEmergency = app.employment_status === 'unemployed';
+            
+            return `
+                <div class="application-item border-bottom py-3" data-app-id="${app.id}" data-status="${app.status.toLowerCase()}">
+                    <div class="d-flex align-items-start">
+                        <div class="form-check me-3 mt-1">
+                            <input class="form-check-input application-checkbox" type="checkbox" 
+                                   data-app-id="${app.id}" ${app.status !== 'PENDING' ? 'disabled' : ''}>
+                        </div>
+                        
+                        <div class="flex-grow-1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <h6 class="mb-0 me-2">${app.first_name} ${app.last_name}</h6>
+                                        ${isEmergency ? '<span class="badge bg-danger ms-2">🚨 EMERGENCY</span>' : ''}
+                                        ${this.getStatusBadge(app.status)}
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-telephone me-1"></i>${app.phone}
+                                        ${app.email ? ` • <i class="bi bi-envelope me-1"></i>${app.email}` : ''}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-muted small">
+                                        <i class="bi bi-box me-1"></i>${packageName}<br>
+                                        <i class="bi bi-people me-1"></i>${app.family_size} members<br>
+                                        <i class="bi bi-clock me-1"></i>${timeAgo}
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewApplicationDetail('${app.id}')">
+                                            <i class="bi bi-eye"></i> View
+                                        </button>
+                                        ${app.status === 'PENDING' ? `
+                                            <button class="btn btn-outline-success btn-sm" onclick="quickApprove('${app.id}')">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="quickReject('${app.id}')">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <strong>Ref:</strong> ${app.reference_number} • 
+                                    <strong>Employment:</strong> ${app.employment_status || 'Not specified'} •
+                                    <strong>Address:</strong> ${app.address || 'Not provided'}
+                                </small>
+                            </div>
+                            
+                            ${app.situation_description ? `
+                                <div class="mt-2 p-2 bg-light rounded">
+                                    <small><strong>Situation:</strong> ${app.situation_description.substring(0, 150)}${app.situation_description.length > 150 ? '...' : ''}</small>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = applicationsHtml;
+    }
+    
+    updateStats() {
+        const stats = this.calculateStats();
+        
+        // Update filter button counts
+        document.querySelector('label[for="filterAll"]').textContent = `All (${stats.total})`;
+        document.querySelector('label[for="filterPending"]').textContent = `Pending (${stats.pending})`;
+        document.querySelector('label[for="filterApproved"]').textContent = `Approved (${stats.approved})`;
+        document.querySelector('label[for="filterRejected"]').textContent = `Rejected (${stats.rejected})`;
+        document.querySelector('label[for="filterEmergency"]').textContent = `🚨 Emergency (${stats.emergency})`;
+        
+        // Update stats cards
+        document.getElementById('stat-card-pending').textContent = stats.pending;
+        document.getElementById('stat-card-approved').textContent = stats.approved;
+        document.getElementById('stat-card-rejected').textContent = stats.rejected;
+    }
+    
+    calculateStats() {
+        return {
+            total: this.applications.length,
+            pending: this.applications.filter(app => app.status === 'PENDING').length,
+            approved: this.applications.filter(app => app.status === 'APPROVED').length,
+            rejected: this.applications.filter(app => app.status === 'REJECTED').length,
+            emergency: this.applications.filter(app => 
+                app.employment_status === 'unemployed' || app.selected_package === 'emergency'
+            ).length
+        };
+    }
+    
+    updateFilterButtons() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.checked = btn.dataset.filter === this.currentFilter;
+        });
+    }
+    
+    async approveApplication(appId, notes = 'Approved by supervisor') {
+        try {
+            const response = await fetch(`/api/applications/${appId}/approve/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({ notes })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Application approved successfully!', 'success');
+                await this.loadApplications();
+                this.applyFilters();
+            } else {
+                this.showNotification(result.message || 'Approval failed', 'error');
+            }
+        } catch (error) {
+            console.error('Approval error:', error);
+            this.showNotification('Network error. Please try again.', 'error');
+        }
+    }
+    
+    async rejectApplication(appId, reason, notify = true) {
+        try {
+            const response = await fetch(`/api/applications/${appId}/reject/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.getAuthToken()}`,
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({ notes: reason })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showNotification('Application rejected', 'warning');
+                await this.loadApplications();
+                this.applyFilters();
+            } else {
+                this.showNotification(result.message || 'Rejection failed', 'error');
+            }
+        } catch (error) {
+            console.error('Rejection error:', error);
+            this.showNotification('Network error. Please try again.', 'error');
+        }
+    }
+    
+    setFilter(filter) {
+        this.currentFilter = filter;
+        document.getElementById('statusFilter').value = filter;
+        this.updateFilterButtons();
+        this.applyFilters();
+    }
+    
+    getPackageName(packageType) {
+        const packageNames = {
+            'small_basic': 'Small Family Basic',
+            'medium_basic': 'Medium Family Basic',
+            'large_basic': 'Large Family Basic',
+            'emergency': 'Emergency Relief',
+            'senior': 'Senior Citizen Special'
+        };
+        return packageNames[packageType] || packageType;
+    }
+    
+    getStatusBadge(status) {
+        const statusClasses = {
+            'PENDING': 'bg-warning text-dark',
+            'APPROVED': 'bg-success',
+            'REJECTED': 'bg-danger',
+            'PICKED_UP': 'bg-primary'
+        };
+        const statusNames = {
+            'PENDING': 'Under Review',
+            'APPROVED': 'Approved',
+            'REJECTED': 'Rejected',
+            'PICKED_UP': 'Collected'
+        };
+        
+        return `<span class="badge ${statusClasses[status] || 'bg-secondary'} ms-2">${statusNames[status] || status}</span>`;
+    }
+    
+    getTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+        
+        if (diffInHours < 1) return 'Just now';
+        if (diffInHours === 1) return '1 hour ago';
+        if (diffInHours < 24) return `${diffInHours} hours ago`;
+        
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays === 1) return '1 day ago';
+        return `${diffInDays} days ago`;
+    }
+    
+    showNotification(message, type = 'info') {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'error' ? 'danger' : type} position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <span>${message}</span>
+                <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+    
+    getAuthToken() {
+        return '';
+    }
+    
+    getCSRFToken() {
+        const cookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        return cookie ? cookie.split('=')[1] : '';
+    }
+}
+
+// Quick action functions
+window.quickApprove = async function(appId) {
+    if (confirm('Approve this application?')) {
+        await window.applicationManager.approveApplication(appId);
+    }
+};
+
+window.quickReject = function(appId) {
+    showRejectionModal(appId);
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Set page identifier
     document.body.dataset.page = 'applications';
     
-    // Initialize application manager if not already done
-    if (!window.applicationManager) {
-        window.applicationManager = new ApplicationManager();
-    }
+    // Initialize application manager
+    window.applicationManager = new ApplicationManager();
 });
 
 // Bulk Actions
@@ -307,65 +729,112 @@ function resetFilters() {
 }
 
 // Application detail viewing
-function viewApplicationDetail(appId) {
-    // Simulate loading application details
-    const mockDetail = {
-        id: appId,
-        name: 'John Doe',
-        phone: '08012345678',
-        email: 'john.doe@email.com',
-        address: '123 Main Street, Lagos',
-        familySize: 5,
-        children: 3,
-        elderly: 0,
-        employment: 'Part-time employment',
-        package: 'Medium Family Basic',
-        specialNeeds: 'None',
-        situation: 'Lost job due to economic situation, need temporary assistance for family.',
-        submittedDate: '2024-08-30 14:30',
-        priority: 'normal',
-        status: 'pending'
-    };
+async function viewApplicationDetail(appId) {
+    try {
+        const response = await fetch(`/api/applications/${appId}/`, {
+            headers: {
+                'Authorization': `Bearer ${window.applicationManager.getAuthToken()}`,
+                'X-CSRFToken': window.applicationManager.getCSRFToken()
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const app = await response.json();
+        
+        const detail = {
+            id: app.id,
+            name: `${app.first_name} ${app.last_name}`,
+            phone: app.phone,
+            email: app.email || 'Not provided',
+            address: `${app.address}` || 'Not provided',
+            familySize: app.family_size,
+            children: app.children_count || 'Not specified',
+            elderly: app.elderly_count || 'Not specified',
+            employment: app.employment_status || 'Not specified',
+            tecMember: app.tec_member === 'yes' ? 'Yes, TEC Member' : app.tec_member === 'no' ? 'Not a TEC Member' : 'Not specified',
+            package: window.applicationManager.getPackageName(app.selected_package),
+            specialNeeds: app.special_needs || 'None',
+            situation: app.situation_description || 'Not provided',
+            submittedDate: new Date(app.created_at).toLocaleString(),
+            priority: app.employment_status === 'unemployed' ? 'emergency' : 'normal',
+            status: app.status.toLowerCase(),
+            referenceNumber: app.reference_number,
+            preferredDate: app.preferred_date,
+            preferredTime: app.preferred_time
+        };
+        
+        displayApplicationDetail(detail, appId);
+        
+    } catch (error) {
+        console.error('Error loading application details:', error);
+        window.applicationManager.showNotification('Failed to load application details', 'error');
+    }
+}
+
+function displayApplicationDetail(detail, appId) {
     
     const modal = new bootstrap.Modal(document.getElementById('applicationDetailModal'));
     const content = document.getElementById('applicationDetailContent');
     
     content.innerHTML = `
+        <div class="alert alert-${detail.priority === 'emergency' ? 'danger' : 'info'} mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Ref: ${detail.referenceNumber}</strong>
+                    ${detail.priority === 'emergency' ? '<span class="badge bg-danger ms-2">🚨 EMERGENCY</span>' : ''}
+                </div>
+                <span class="badge ${detail.status === 'pending' ? 'bg-warning text-dark' : detail.status === 'approved' ? 'bg-success' : 'bg-danger'}">${detail.status.toUpperCase()}</span>
+            </div>
+        </div>
+        
         <div class="row">
             <div class="col-md-6">
-                <h6>Personal Information</h6>
+                <h6><i class="bi bi-person me-2"></i>Personal Information</h6>
                 <table class="table table-sm">
-                    <tr><td><strong>Name:</strong></td><td>${mockDetail.name}</td></tr>
-                    <tr><td><strong>Phone:</strong></td><td>${mockDetail.phone}</td></tr>
-                    <tr><td><strong>Email:</strong></td><td>${mockDetail.email || 'Not provided'}</td></tr>
-                    <tr><td><strong>Address:</strong></td><td>${mockDetail.address}</td></tr>
+                    <tr><td><strong>Name:</strong></td><td>${detail.name}</td></tr>
+                    <tr><td><strong>Phone:</strong></td><td>${detail.phone}</td></tr>
+                    <tr><td><strong>Email:</strong></td><td>${detail.email}</td></tr>
+                    <tr><td><strong>Address:</strong></td><td>${detail.address}</td></tr>
                 </table>
             </div>
             <div class="col-md-6">
-                <h6>Family Details</h6>
+                <h6><i class="bi bi-people me-2"></i>Family Details</h6>
                 <table class="table table-sm">
-                    <tr><td><strong>Family Size:</strong></td><td>${mockDetail.familySize} members</td></tr>
-                    <tr><td><strong>Children:</strong></td><td>${mockDetail.children}</td></tr>
-                    <tr><td><strong>Elderly:</strong></td><td>${mockDetail.elderly}</td></tr>
-                    <tr><td><strong>Employment:</strong></td><td>${mockDetail.employment}</td></tr>
+                    <tr><td><strong>Family Size:</strong></td><td>${detail.familySize} members</td></tr>
+                    <tr><td><strong>Children:</strong></td><td>${detail.children}</td></tr>
+                    <tr><td><strong>Elderly:</strong></td><td>${detail.elderly}</td></tr>
+                    <tr><td><strong>Employment:</strong></td><td>${detail.employment}</td></tr>
+                    <tr><td><strong>TEC Member:</strong></td><td>${detail.tecMember}</td></tr>
                 </table>
             </div>
         </div>
         
         <div class="row mt-3">
             <div class="col-12">
-                <h6>Request Details</h6>
+                <h6><i class="bi bi-box me-2"></i>Request Details</h6>
                 <table class="table table-sm">
-                    <tr><td><strong>Package Requested:</strong></td><td>${mockDetail.package}</td></tr>
-                    <tr><td><strong>Special Needs:</strong></td><td>${mockDetail.specialNeeds}</td></tr>
-                    <tr><td><strong>Current Situation:</strong></td><td>${mockDetail.situation}</td></tr>
-                    <tr><td><strong>Submitted:</strong></td><td>${mockDetail.submittedDate}</td></tr>
-                    <tr><td><strong>Priority:</strong></td><td>
-                        <span class="badge ${mockDetail.priority === 'emergency' ? 'bg-danger' : 'bg-secondary'}">${mockDetail.priority}</span>
-                    </td></tr>
+                    <tr><td><strong>Package Requested:</strong></td><td>${detail.package}</td></tr>
+                    <tr><td><strong>Preferred Date:</strong></td><td>${detail.preferredDate || 'Not specified'}</td></tr>
+                    <tr><td><strong>Preferred Time:</strong></td><td>${detail.preferredTime || 'Not specified'}</td></tr>
+                    <tr><td><strong>Special Circumstances:</strong></td><td>${detail.specialNeeds}</td></tr>
+                    <tr><td><strong>Submitted:</strong></td><td>${detail.submittedDate}</td></tr>
                 </table>
             </div>
         </div>
+        
+        ${detail.situation !== 'Not provided' ? `
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6><i class="bi bi-chat-text me-2"></i>Current Situation</h6>
+                    <div class="p-3 bg-light rounded">
+                        <p class="mb-0">${detail.situation}</p>
+                    </div>
+                </div>
+            </div>
+        ` : ''}
     `;
     
     // Set up action buttons

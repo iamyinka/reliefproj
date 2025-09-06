@@ -22,13 +22,14 @@ function quickApproveNext() {
     }
 }
 
-// Application Management
-class ApplicationManager {
+// Application Management - DISABLED (replaced by page-specific implementation)
+class ApplicationManagerOld {
     constructor() {
         this.applications = [];
         this.currentFilter = 'all';
         this.currentSort = 'date';
-        this.init();
+        // Disabled to use real backend implementation
+        // this.init();
     }
     
     init() {
@@ -64,39 +65,46 @@ class ApplicationManager {
         });
     }
     
-    loadApplications() {
-        // Simulate loading applications
-        this.applications = [
-            {
-                id: 'APP-001',
-                name: 'John Doe',
-                package: 'Medium Family Basic',
-                status: 'pending',
-                date: '2024-08-30',
-                familySize: 5,
-                priority: 'normal'
-            },
-            {
-                id: 'APP-002', 
-                name: 'Jane Smith',
-                package: 'Small Family Basic',
-                status: 'pending',
-                date: '2024-08-30',
-                familySize: 2,
-                priority: 'emergency'
-            },
-            {
-                id: 'APP-003',
-                name: 'Michael Johnson',
-                package: 'Large Family Basic', 
-                status: 'approved',
-                date: '2024-08-29',
-                familySize: 8,
-                priority: 'normal'
+    async loadApplications() {
+        try {
+            const response = await fetch('/api/applications/list/');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
             }
-        ];
-        
-        this.renderApplications();
+            
+            const data = await response.json();
+            const applications = Array.isArray(data) ? data : data.results || [];
+            
+            // Transform API data to match expected format
+            this.applications = applications.map(app => ({
+                id: app.id,
+                name: `${app.first_name} ${app.last_name}`,
+                package: this.getPackageName(app.selected_package),
+                status: app.status.toLowerCase(),
+                date: app.created_at.split('T')[0],
+                familySize: app.family_size,
+                priority: app.employment_status === 'unemployed' ? 'emergency' : 'normal'
+            }));
+            
+            this.renderApplications();
+            console.log(`Loaded ${this.applications.length} applications from API`);
+            
+        } catch (error) {
+            console.error('Error loading applications:', error);
+            this.applications = [];
+            this.renderApplications();
+        }
+    }
+    
+    getPackageName(packageType) {
+        const packageNames = {
+            'small_basic': 'Small Family Basic',
+            'medium_basic': 'Medium Family Basic',
+            'large_basic': 'Large Family Basic',
+            'emergency': 'Emergency Relief',
+            'senior': 'Senior Citizen Special'
+        };
+        return packageNames[packageType] || packageType;
     }
     
     setFilter(filter) {
@@ -235,38 +243,92 @@ class PackageManager {
         });
     }
     
-    loadPackages() {
-        this.packages = [
-            {
-                id: 'PKG-001',
-                name: 'Small Family Basic',
-                items: '5kg Rice, 2kg Beans, 1L Oil, 1kg Salt',
-                cashAmount: 5000,
-                stock: 25,
-                lowStockThreshold: 10,
-                familySize: 'small'
-            },
-            {
-                id: 'PKG-002',
-                name: 'Medium Family Basic', 
-                items: '10kg Rice, 5kg Beans, 2L Oil, 1kg Salt, 1kg Sugar',
-                cashAmount: 8000,
-                stock: 5,
-                lowStockThreshold: 10,
-                familySize: 'medium'
-            },
-            {
-                id: 'PKG-003',
-                name: 'Large Family Basic',
-                items: '25kg Rice, 10kg Beans, 3L Oil, 2kg Salt, 2kg Sugar',
-                cashAmount: 15000,
-                stock: 0,
-                lowStockThreshold: 5,
-                familySize: 'large'
+    async loadPackages() {
+        try {
+            const response = await fetch('/api/packages/manage/', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to load packages');
             }
-        ];
+            
+            const data = await response.json();
+            
+            // Handle different response structures
+            let packages = [];
+            if (Array.isArray(data)) {
+                packages = data;
+            } else if (data.results && Array.isArray(data.results)) {
+                // Paginated response
+                packages = data.results;
+            } else if (data.packages && Array.isArray(data.packages)) {
+                packages = data.packages;
+            } else {
+                console.warn('Unexpected API response structure:', data);
+                showNotification('No package data available', 'warning');
+                this.packages = [];
+                this.renderPackages();
+                return;
+            }
+            
+            this.packages = packages.map(pkg => ({
+                id: pkg.id,
+                name: pkg.name,
+                items: this.formatPackageItems(pkg.package_items || []),
+                cashAmount: pkg.cash_amount || 0,
+                stock: pkg.available_quantity || 0,
+                totalQuantity: pkg.total_quantity || 0,
+                lowStockThreshold: 10, // Default threshold
+                packageType: pkg.package_type,
+                isActive: pkg.is_active,
+                isAvailable: pkg.is_available,
+                isLowStock: pkg.is_low_stock,
+                description: pkg.description || ''
+            }));
+            
+            this.renderPackages();
+            this.updateStatistics();
+        } catch (error) {
+            console.error('Error loading packages:', error);
+            showNotification('Error loading packages. Using fallback display.', 'warning');
+            
+            // Fallback to empty array
+            this.packages = [];
+            this.renderPackages();
+        }
+    }
+    
+    formatPackageItems(packageItems) {
+        if (!packageItems || packageItems.length === 0) {
+            return 'No items specified';
+        }
         
-        this.renderPackages();
+        return packageItems
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .map(item => item.item_name)
+            .join(', ');
+    }
+    
+    updateStatistics() {
+        const activePackages = this.packages.filter(pkg => pkg.isActive).length;
+        const totalStock = this.packages.reduce((sum, pkg) => sum + pkg.stock, 0);
+        const lowStockCount = this.packages.filter(pkg => pkg.isLowStock).length;
+        const outOfStockCount = this.packages.filter(pkg => pkg.stock === 0).length;
+        
+        // Update statistics cards if they exist
+        this.updateStatCard('.stat-card.primary .stat-number', activePackages);
+        this.updateStatCard('.stat-card.success .stat-number', totalStock);
+        this.updateStatCard('.stat-card.warning .stat-number', lowStockCount);
+        this.updateStatCard('.stat-card.info .stat-number', outOfStockCount);
+    }
+    
+    updateStatCard(selector, value) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = value;
+        }
     }
     
     renderPackages() {
@@ -285,18 +347,32 @@ class PackageManager {
             stockClass = 'out-of-stock';
             stockBadge = 'Out of Stock';
             badgeClass = 'bg-danger';
-        } else if (pkg.stock <= pkg.lowStockThreshold) {
+        } else if (pkg.isLowStock) {
             stockClass = 'low-stock';
             stockBadge = 'Low Stock';
             badgeClass = 'bg-warning';
         }
         
+        // Add inactive badge if not active
+        const inactiveClass = !pkg.isActive ? ' inactive-package' : '';
+        const statusBadges = [];
+        
+        if (!pkg.isActive) {
+            statusBadges.push('<span class="badge bg-secondary ms-1">Inactive</span>');
+        }
+        if (!pkg.isAvailable) {
+            statusBadges.push('<span class="badge bg-warning ms-1">Unavailable</span>');
+        }
+        
         return `
-            <div class="package-item ${stockClass}">
+            <div class="package-item ${stockClass}${inactiveClass}">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                        <h6 class="mb-1">${pkg.name}</h6>
-                        <small class="text-muted">${pkg.id}</small>
+                        <h6 class="mb-1">
+                            ${pkg.name}
+                            ${statusBadges.join('')}
+                        </h6>
+                        <small class="text-muted">ID: ${pkg.id} • ${pkg.packageType}</small>
                     </div>
                     <span class="badge ${badgeClass}">${stockBadge}</span>
                 </div>
@@ -304,18 +380,24 @@ class PackageManager {
                 <div class="row mb-3">
                     <div class="col-md-8">
                         <strong>Items:</strong><br>
-                        <small>${pkg.items}</small><br>
-                        <strong>Cash:</strong> ₦${pkg.cashAmount.toLocaleString()}
+                        <small class="text-wrap">${pkg.items}</small><br><br>
+                        <strong>Cash Support:</strong> ₦${pkg.cashAmount.toLocaleString()}
+                        ${pkg.description ? `<br><small class="text-muted">${pkg.description}</small>` : ''}
                     </div>
                     <div class="col-md-4 text-md-end">
                         <div class="h4 mb-1">${pkg.stock}</div>
                         <small class="text-muted">Available</small>
+                        ${pkg.totalQuantity ? `<br><small class="text-muted">of ${pkg.totalQuantity} total</small>` : ''}
                     </div>
                 </div>
                 
                 <div class="btn-group w-100">
-                    <button class="btn btn-outline-primary update-stock-btn" data-package-id="${pkg.id}">
-                        Update Stock
+                    <button class="btn btn-outline-primary update-stock-btn" data-package-id="${pkg.id}" 
+                            onclick="showStockUpdateModal(${pkg.id}, ${pkg.stock})">
+                        Restock
+                    </button>
+                    <button class="btn btn-outline-info" onclick="viewPackageDetails(${pkg.id})">
+                        View Details
                     </button>
                     <button class="btn btn-outline-secondary edit-package-btn" data-package-id="${pkg.id}">
                         Edit
@@ -328,27 +410,86 @@ class PackageManager {
         `;
     }
     
-    updateStock(packageId) {
-        const pkg = this.packages.find(p => p.id === packageId);
-        if (pkg) {
-            const newStock = prompt(`Current stock: ${pkg.stock}\nEnter new stock quantity:`, pkg.stock);
-            if (newStock !== null && !isNaN(newStock)) {
-                pkg.stock = parseInt(newStock);
-                this.renderPackages();
-                showNotification('Stock updated successfully!', 'success');
+    async updateStock(packageId, newQuantity) {
+        try {
+            const response = await fetch(`/api/packages/${packageId}/restock/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({ quantity: newQuantity })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                showNotification(result.message || 'Stock updated successfully!', 'success');
+                // Reload packages to get updated data
+                this.loadPackages();
+            } else {
+                throw new Error(result.message || 'Failed to update stock');
+            }
+        } catch (error) {
+            console.error('Error updating stock:', error);
+            showNotification('Error updating stock: ' + error.message, 'danger');
+        }
+    }
+    
+    getCSRFToken() {
+        // First try to get from meta tag (most reliable)
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        if (csrfMeta) {
+            return csrfMeta.getAttribute('content');
+        }
+        
+        // Fallback: try to get from cookie
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'csrftoken') {
+                return value;
             }
         }
+        
+        // Final fallback: try Django's default CSRF input
+        const csrfInput = document.querySelector('[name="csrfmiddlewaretoken"]');
+        if (csrfInput) {
+            return csrfInput.value;
+        }
+        
+        console.warn('CSRF token not found');
+        return '';
     }
     
     editPackage(packageId) {
         showNotification('Edit package functionality coming soon!', 'info');
     }
     
-    deletePackage(packageId) {
-        if (confirm('Are you sure you want to delete this package?')) {
-            this.packages = this.packages.filter(p => p.id !== packageId);
-            this.renderPackages();
-            showNotification('Package deleted successfully!', 'success');
+    async deletePackage(packageId) {
+        if (!confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/packages/manage/${packageId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': this.getCSRFToken()
+                }
+            });
+            
+            if (response.ok) {
+                showNotification('Package deleted successfully!', 'success');
+                // Reload packages to get updated data
+                this.loadPackages();
+            } else {
+                const result = await response.json().catch(() => ({}));
+                throw new Error(result.detail || 'Failed to delete package');
+            }
+        } catch (error) {
+            console.error('Error deleting package:', error);
+            showNotification('Error deleting package: ' + error.message, 'danger');
         }
     }
 }
@@ -391,7 +532,9 @@ class QRScanner {
             
             // Simulate scan result after 3 seconds
             setTimeout(() => {
-                this.processScannedCode('RELIEF-APP-QR123456789');
+                // Generate a realistic test QR code or fetch from real scan
+                const testCode = `RELIEF-APP-QR${Date.now()}`;
+                this.processScannedCode(testCode);
             }, 3000);
         }
     }
@@ -404,29 +547,8 @@ class QRScanner {
     }
     
     processScannedCode(code) {
-        this.isScanning = false;
-        
-        // Reset scanner UI
-        const scannerDiv = document.querySelector('.scanner-viewfinder');
-        const startBtn = document.getElementById('startScan');
-        
-        if (scannerDiv && startBtn) {
-            scannerDiv.innerHTML = '<i class="bi bi-qr-code-scan display-4 text-muted"></i>';
-            startBtn.textContent = 'Start Scanning';
-            startBtn.disabled = false;
-        }
-        
-        // Simulate lookup
-        const mockResult = {
-            code: code,
-            applicant: 'John Doe',
-            package: 'Medium Family Basic',
-            status: 'ready_for_pickup',
-            reference: 'REF-240830001',
-            items: '10kg Rice, 5kg Beans, 2L Oil, ₦8,000 Cash'
-        };
-        
-        this.displayScanResult(mockResult);
+        // This function is deprecated - the new ReliefQRScanner handles all QR processing
+        console.warn('Old QRScanner.processScannedCode called - this should not happen');
     }
     
     displayScanResult(result) {
@@ -533,7 +655,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentPage = document.body.dataset.page;
     
     if (currentPage === 'applications' || document.getElementById('applicationsContainer')) {
-        window.applicationManager = new ApplicationManager();
+        // ApplicationManager is now initialized in the specific page template
+        // window.applicationManager = new ApplicationManager();
     }
     
     if (currentPage === 'packages' || document.getElementById('packagesContainer')) {
@@ -541,70 +664,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     if (currentPage === 'scanner' || document.querySelector('.scanner-container')) {
-        window.qrScanner = new QRScanner();
+        // Old QRScanner disabled - using new ReliefQRScanner instead
+        console.log('Scanner page detected - ReliefQRScanner will be initialized from scanner.html');
     }
     
-    // Initialize charts if Chart.js is loaded
-    if (typeof Chart !== 'undefined') {
-        initializeCharts();
-    }
+    // Charts are now initialized in individual page templates to avoid conflicts
+    // No longer initializing charts globally from supervisor.js
 });
 
-// Chart initialization
-function initializeCharts() {
-    // Applications over time chart
-    const applicationsCtx = document.getElementById('applicationsChart');
-    if (applicationsCtx) {
-        new Chart(applicationsCtx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Applications',
-                    data: [12, 19, 8, 15, 22, 18, 25],
-                    borderColor: 'rgb(25, 82, 150)',
-                    backgroundColor: 'rgba(25, 82, 150, 0.1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-    
-    // Package distribution chart
-    const packagesCtx = document.getElementById('packagesChart');
-    if (packagesCtx) {
-        new Chart(packagesCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Small Family', 'Medium Family', 'Large Family', 'Emergency'],
-                datasets: [{
-                    data: [30, 45, 15, 10],
-                    backgroundColor: [
-                        'rgb(25, 82, 150)',
-                        'rgb(182, 221, 238)', 
-                        'rgb(190, 208, 0)',
-                        'rgb(161, 218, 248)'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
-    }
-}
+// Chart initialization moved to individual page templates to prevent conflicts

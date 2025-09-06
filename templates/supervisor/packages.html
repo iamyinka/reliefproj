@@ -192,6 +192,59 @@
     </div>
 </div>
 
+<!-- Create New Package Modal -->
+<div class="modal fade" id="newPackageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Package</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPackageForm">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label for="newPackageName" class="form-label">Package Name *</label>
+                            <input type="text" class="form-control" id="newPackageName" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="newCashAmount" class="form-label">Cash Amount (₦) *</label>
+                            <input type="number" class="form-control" id="newCashAmount" min="0" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="newPackageItems" class="form-label">Food Items *</label>
+                            <textarea class="form-control" id="newPackageItems" rows="3" 
+                                      placeholder="e.g., 20kg rice, 50kg garri, 10kg beans" required></textarea>
+                            <small class="form-text text-muted">List all food items with quantities</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="newPackageType" class="form-label">Package Type *</label>
+                            <select class="form-select" id="newPackageType" required>
+                                <option value="">Select package type</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                            <small class="form-text text-muted">Only available package types are shown</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="newInitialStock" class="form-label">Initial Stock *</label>
+                            <input type="number" class="form-control" id="newInitialStock" min="0" value="20" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="newPackageDescription" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="newPackageDescription" rows="2" 
+                                      placeholder="Brief description of this package..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="createPackageBtn">Create Package</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Edit Package Modal -->
 <div class="modal fade" id="editPackageModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -263,7 +316,245 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!window.packageManager) {
         window.packageManager = new PackageManager();
     }
+    
+    // Initialize create package functionality
+    initializeCreatePackage();
 });
+
+// Create Package Functions
+function initializeCreatePackage() {
+    const createBtn = document.getElementById('createPackageBtn');
+    if (createBtn) {
+        createBtn.addEventListener('click', handleCreatePackage);
+    }
+    
+    // Populate package type dropdown when modal is shown
+    const modal = document.getElementById('newPackageModal');
+    if (modal) {
+        modal.addEventListener('shown.bs.modal', loadAvailablePackageTypes);
+    }
+}
+
+async function loadAvailablePackageTypes() {
+    try {
+        // Get existing packages to see which types are taken
+        const existingPackages = window.packageManager ? window.packageManager.packages : [];
+        const takenTypes = existingPackages.map(pkg => pkg.packageType);
+        
+        // All possible package types from the model
+        const allPackageTypes = [
+            { value: 'small_basic', label: 'Small Family Basic' },
+            { value: 'small_premium', label: 'Small Family Premium' },
+            { value: 'medium_basic', label: 'Medium Family Basic' },
+            { value: 'medium_premium', label: 'Medium Family Premium' },
+            { value: 'large_basic', label: 'Large Family Basic' },
+            { value: 'large_premium', label: 'Large Family Premium' },
+            { value: 'emergency', label: 'Emergency Relief' },
+            { value: 'senior', label: 'Senior Citizen Special' }
+        ];
+        
+        // Filter out taken types
+        const availableTypes = allPackageTypes.filter(type => !takenTypes.includes(type.value));
+        
+        const select = document.getElementById('newPackageType');
+        if (select) {
+            // Clear existing options except the first one
+            select.innerHTML = '<option value="">Select package type</option>';
+            
+            // Add available options
+            availableTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.value;
+                option.textContent = type.label;
+                select.appendChild(option);
+            });
+            
+            if (availableTypes.length === 0) {
+                select.innerHTML = '<option value="">No package types available</option>';
+                select.disabled = true;
+                showNotification('All package types are already created', 'warning');
+            } else {
+                select.disabled = false;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading package types:', error);
+        showNotification('Error loading package types', 'warning');
+    }
+}
+
+async function handleCreatePackage() {
+    const form = document.getElementById('createPackageForm');
+    const submitBtn = document.getElementById('createPackageBtn');
+    
+    // Get form data
+    const name = document.getElementById('newPackageName').value.trim();
+    const cashAmount = document.getElementById('newCashAmount').value;
+    const itemsText = document.getElementById('newPackageItems').value.trim();
+    const packageType = document.getElementById('newPackageType').value;
+    const initialStock = document.getElementById('newInitialStock').value;
+    const description = document.getElementById('newPackageDescription').value.trim();
+    
+    // Validate required fields
+    if (!name || !cashAmount || !itemsText || !packageType || !initialStock) {
+        showNotification('Please fill in all required fields', 'warning');
+        return;
+    }
+    
+    // Parse items from text
+    const packageItems = parseItemsFromText(itemsText);
+    if (packageItems.length === 0) {
+        showNotification('Please enter valid food items with quantities', 'warning');
+        return;
+    }
+    
+    // Calculate total quantity
+    const totalQuantity = packageItems.reduce((sum, item) => sum + item.quantity, 0);
+    
+    // Convert items to the correct format
+    const itemsObject = {};
+    packageItems.forEach((item, index) => {
+        // Create a simple key based on the item name
+        let key = item.item_name.toLowerCase()
+            .replace(/\s+/g, '_')           // Replace spaces with underscores
+            .replace(/[^a-zA-Z0-9_]/g, '')  // Remove special characters
+            .replace(/^\d+/, '');           // Remove leading numbers
+        
+        // Ensure key is not empty and is unique
+        if (!key) {
+            key = `item_${index + 1}`;
+        }
+        
+        // Make sure key is unique
+        let finalKey = key;
+        let counter = 1;
+        while (itemsObject.hasOwnProperty(finalKey)) {
+            finalKey = `${key}_${counter}`;
+            counter++;
+        }
+        
+        itemsObject[finalKey] = item.item_name;
+    });
+    
+    // Prepare package data
+    const packageData = {
+        name: name,
+        package_type: packageType,
+        description: description || 'Custom package created via supervisor panel',
+        cash_amount: parseFloat(cashAmount),
+        items_included: itemsObject,  // Send as object like in fixtures
+        total_quantity: parseInt(initialStock),
+        available_quantity: parseInt(initialStock),
+        is_active: true
+    };
+    
+    console.log('Sending package data:', packageData);
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
+    
+    try {
+        const response = await fetch('/api/packages/manage/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(packageData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showNotification('Package created successfully!', 'success');
+            
+            // Reset form
+            form.reset();
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newPackageModal'));
+            modal.hide();
+            
+            // Reload packages
+            if (window.packageManager) {
+                window.packageManager.loadPackages();
+            }
+        } else {
+            // Handle detailed error responses
+            let errorMessage = 'Failed to create package';
+            if (result.detail) {
+                errorMessage = result.detail;
+            } else if (result.errors) {
+                // Handle field-specific errors
+                const errorMessages = [];
+                for (const [field, messages] of Object.entries(result.errors)) {
+                    if (Array.isArray(messages)) {
+                        errorMessages.push(`${field}: ${messages.join(', ')}`);
+                    } else {
+                        errorMessages.push(`${field}: ${messages}`);
+                    }
+                }
+                errorMessage = errorMessages.join('; ');
+            } else if (result.message) {
+                errorMessage = result.message;
+            }
+            throw new Error(errorMessage);
+        }
+    } catch (error) {
+        console.error('Error creating package:', error);
+        showNotification('Error creating package: ' + error.message, 'danger');
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Create Package';
+    }
+}
+
+function parseItemsFromText(itemsText) {
+    const items = [];
+    const lines = itemsText.split(',').map(line => line.trim());
+    
+    lines.forEach((line, index) => {
+        if (line) {
+            // Clean up the item name
+            const cleanedItem = line.trim();
+            items.push({
+                item_name: cleanedItem,
+                quantity: 1, // Default quantity
+                order: index + 1
+            });
+        }
+    });
+    
+    return items;
+}
+
+function getCSRFToken() {
+    // First try to get from meta tag (most reliable)
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMeta) {
+        return csrfMeta.getAttribute('content');
+    }
+    
+    // Fallback: try to get from cookie
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') {
+            return value;
+        }
+    }
+    
+    // Final fallback: try Django's default CSRF input
+    const csrfInput = document.querySelector('[name="csrfmiddlewaretoken"]');
+    if (csrfInput) {
+        return csrfInput.value;
+    }
+    
+    console.warn('CSRF token not found');
+    return '';
+}
 
 // Quick Actions
 function quickRestockAll() {

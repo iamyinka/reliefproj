@@ -19,46 +19,104 @@
     </div>
 </section>
 
-<!-- Status Check Form -->
+<!-- Status Check Form & Results -->
 <section class="py-5">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <div class="form-container">
+        <div class="row g-4">
+            <!-- Left Column: Search Form -->
+            <div class="col-lg-5 col-xl-4">
+                <div class="form-container sticky-lg-top" style="top: 2rem;">
                     <h4 class="mb-4 text-center">Enter Your Details</h4>
                     
                     <form id="status-form">
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number *</label>
+                            <label for="phone" class="form-label">Phone Number</label>
                             <input type="tel" class="form-control form-control-lg" id="phone" name="phone" 
-                                   placeholder="080XXXXXXXX" required>
+                                   placeholder="080XXXXXXXX">
                             <div class="form-text">Enter the phone number you used in your application</div>
                         </div>
                         
-                        <div class="text-center">
-                            <span class="text-muted">OR</span>
+                        <div class="text-center my-3">
+                            <span class="text-muted fw-bold">OR</span>
                         </div>
                         
                         <div class="mb-4">
-                            <label for="reference" class="form-label">Reference Number (Optional)</label>
+                            <label for="reference" class="form-label">Reference Number</label>
                             <input type="text" class="form-control form-control-lg" id="reference" name="reference" 
-                                   placeholder="REF-XXXXXXXXX">
+                                   placeholder="e.g., GCR25086583" style="text-transform: uppercase;">
                             <div class="form-text">If you have a reference number from your application</div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <small><strong>Note:</strong> Please provide either your phone number OR reference number to check your application status.</small>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-lg w-100">
                             <i class="bi bi-search me-2"></i>Check Status
                         </button>
                     </form>
+                    
+                    <!-- Quick Help Card -->
+                    <div class="card mt-4 border-light">
+                        <div class="card-body p-3">
+                            <h6 class="card-title text-primary">
+                                <i class="bi bi-question-circle me-2"></i>Need Help?
+                            </h6>
+                            <div class="small text-muted">
+                                <p class="mb-2">Can't find your application?</p>
+                                <ul class="list-unstyled mb-0">
+                                    <li>• Double-check your phone number</li>
+                                    <li>• Wait 1-2 days for processing</li>
+                                    <li>• Contact support if needed</li>
+                                </ul>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="tel:+2349113990103" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-telephone me-1"></i>Call
+                                </a>
+                                <a href="/apply/" class="btn btn-success btn-sm">
+                                    <i class="bi bi-plus-circle me-1"></i>New App
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Status Result -->
-        <div class="row justify-content-center mt-5">
-            <div class="col-lg-8">
+            
+            <!-- Right Column: Results Area -->
+            <div class="col-lg-7 col-xl-8">
                 <div id="status-result">
-                    <!-- Results will be populated here -->
+                    <!-- Default welcome message -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-search display-1 text-muted"></i>
+                        </div>
+                        <h5 class="text-muted mb-3">Ready to Check Your Application</h5>
+                        <p class="text-muted">
+                            Enter your phone number or reference number in the form to see your application status and pickup details.
+                        </p>
+                        
+                        <!-- Status examples preview -->
+                        <div class="row g-3 mt-4">
+                            <div class="col-sm-6">
+                                <div class="card border-warning bg-warning bg-opacity-10">
+                                    <div class="card-body p-3">
+                                        <span class="badge bg-warning text-dark mb-2">Under Review</span>
+                                        <p class="small text-muted mb-0">Your application is being processed</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card border-success bg-success bg-opacity-10">
+                                    <div class="card-body p-3">
+                                        <span class="badge bg-success mb-2">Ready for Pickup</span>
+                                        <p class="small text-muted mb-0">QR code and pickup details available</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -159,85 +217,6 @@
     </div>
 </section>
 
-<!-- Demo Status Display (for demonstration) -->
-<section class="py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card border-primary">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h5 class="mb-0">Demo Status Result</h5>
-                        <small>This is a sample status display</small>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center mb-4">
-                            <span class="status-badge status-approved">Approved - Ready for Pickup</span>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Package Details</h6>
-                                <p class="text-muted">Medium Family Basic Package</p>
-                                <p class="small">
-                                    <strong>Contents:</strong> 10kg Rice, 5kg Beans, 2L Vegetable Oil, 
-                                    1kg Salt, 1kg Sugar + ₦8,000 Cash
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Pickup Information</h6>
-                                <p class="text-muted">
-                                    <i class="bi bi-calendar me-2"></i>Saturday, September 15, 2024<br>
-                                    <i class="bi bi-clock me-2"></i>10:00 AM - 12:00 PM<br>
-                                    <i class="bi bi-geo-alt me-2"></i>Community Center, Lagos
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        
-                        <div class="text-center">
-                            <h6>Your QR Code</h6>
-                            <div class="qr-code mb-3">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=RELIEF-APP-QR123456789" 
-                                     alt="QR Code" class="img-fluid">
-                            </div>
-                            <p class="small text-muted">
-                                Reference: <strong>REF-240915001</strong><br>
-                                Present this QR code during pickup
-                            </p>
-                        </div>
-                        
-                        <hr>
-                        
-                        <div class="row text-center">
-                            <div class="col-md-6">
-                                <h6>Contact Person</h6>
-                                <p class="text-muted">
-                                    Mrs. Sarah Johnson<br>
-                                    <i class="bi bi-telephone me-1"></i>+234 812 345 6789
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Important Notes</h6>
-                                <p class="small text-muted">
-                                    • Bring a valid ID<br>
-                                    • QR code expires after pickup<br>
-                                    • Contact us if you can't make it
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center mt-4">
-                            <a href="{% url 'pickup' %}" class="btn btn-success btn-lg">
-                                <i class="bi bi-arrow-right me-2"></i>View Full Pickup Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Help Section -->
 <section class="py-5 bg-light">
@@ -284,7 +263,7 @@
                         </div>
                         
                         <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
-                            <a href="tel:+2348123456789" class="btn btn-primary">
+                            <a href="tel:+2349113990103" class="btn btn-primary">
                                 <i class="bi bi-telephone me-2"></i>Call Support
                             </a>
                             <a href="mailto:support@ourgcrelief.com" class="btn btn-outline-primary">
@@ -377,19 +356,482 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize status checker
-    new window.CommunityRelief.StatusChecker();
+// Nigerian phone number validation
+function validateNigerianPhone(phone) {
+    if (!phone) return false;
     
-    // Phone number validation
-    document.getElementById('phone').addEventListener('input', function() {
-        const phone = this.value;
-        if (phone && !window.CommunityRelief.validatePhone(phone)) {
-            this.setCustomValidity('Please enter a valid Nigerian phone number (e.g., 08012345678)');
+    // Remove spaces, dashes, and other non-digit characters except +
+    const cleaned = phone.replace(/[^\d+]/g, '');
+    
+    // Nigerian phone number patterns
+    const patterns = [
+        /^0[789][01]\d{8}$/,           // 08012345678 (local format)
+        /^\+2348[01]\d{8}$/,           // +2348012345678 (international)
+        /^2348[01]\d{8}$/,             // 2348012345678 (without +)
+    ];
+    
+    return patterns.some(pattern => pattern.test(cleaned));
+}
+
+// Status checker functionality - with duplicate protection
+if (typeof window.StatusChecker === 'undefined') {
+window.StatusChecker = class StatusChecker {
+    constructor() {
+        this.form = document.getElementById('status-form');
+        this.phoneInput = document.getElementById('phone');
+        this.referenceInput = document.getElementById('reference');
+        this.resultDiv = document.getElementById('status-result');
+        
+        this.init();
+    }
+    
+    init() {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.phoneInput.addEventListener('input', () => this.validatePhone());
+        this.referenceInput.addEventListener('input', () => this.formatReference());
+        
+        // Clear other field when one is filled
+        this.phoneInput.addEventListener('input', () => {
+            if (this.phoneInput.value.trim()) {
+                this.referenceInput.value = '';
+            }
+        });
+        
+        this.referenceInput.addEventListener('input', () => {
+            if (this.referenceInput.value.trim()) {
+                this.phoneInput.value = '';
+            }
+        });
+        
+        // Disable auto-submit to prevent race conditions
+        // this.checkForAutoSubmit();
+    }
+    
+    checkForAutoSubmit() {
+        // Small delay to let page fully load
+        setTimeout(() => {
+            const phone = this.phoneInput.value.trim();
+            const reference = this.referenceInput.value.trim();
+            
+            console.log('Checking for auto-submit:', { phone, reference });
+            
+            // Only auto-submit if there's actual user input (not placeholder text or demo data)
+            const isDemoPhone = phone === '080XXXXXXXX' || phone === '' || phone.startsWith('080X');
+            const isDemoReference = reference === 'GCR25080107' || reference === 'e.g., GCR25086583' || reference === '';
+            
+            if ((!isDemoPhone && phone) || (!isDemoReference && reference)) {
+                console.log('Auto-submitting with pre-filled data:', { phone, reference });
+                this.handleSubmit({ preventDefault: () => {} });
+            } else {
+                console.log('Not auto-submitting - demo/placeholder data detected');
+            }
+        }, 500);
+    }
+    
+    validatePhone() {
+        const phone = this.phoneInput.value.trim();
+        if (phone && !validateNigerianPhone(phone)) {
+            this.phoneInput.setCustomValidity('Please enter a valid Nigerian phone number (e.g., 08012345678, +2348012345678)');
         } else {
-            this.setCustomValidity('');
+            this.phoneInput.setCustomValidity('');
         }
-    });
+    }
+    
+    formatReference() {
+        // Auto-uppercase reference number
+        const ref = this.referenceInput.value.toUpperCase();
+        if (ref !== this.referenceInput.value) {
+            this.referenceInput.value = ref;
+        }
+    }
+    
+    async handleSubmit(e) {
+        e.preventDefault();
+        
+        const phone = this.phoneInput.value.trim();
+        const reference = this.referenceInput.value.trim();
+        
+        // Validate that at least one field is provided
+        if (!phone && !reference) {
+            this.showError('Please provide either your phone number or reference number.');
+            return;
+        }
+        
+        // Validate phone format if provided
+        if (phone && !validateNigerianPhone(phone)) {
+            this.showError('Please enter a valid Nigerian phone number.');
+            return;
+        }
+        
+        await this.checkStatus({ phone, reference });
+    }
+    
+    async checkStatus(data) {
+        const submitBtn = this.form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Show loading state
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/applications/check-status/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.showApplicationStatus(result);
+            } else {
+                this.showError(result.message);
+            }
+            
+        } catch (error) {
+            console.error('Status check error:', error);
+            this.showError('Network error. Please check your connection and try again.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+    
+    showApplicationStatus(result) {
+        const app = result.application;
+        const pickup = result.pickup;
+        
+        // Debug log to see what data we're getting
+        console.log('showApplicationStatus called with:', result);
+        console.log('Current resultDiv content before update:', this.resultDiv.innerHTML.substring(0, 100));
+        
+        const statusHtml = `
+            <!-- Status Header -->
+            <div class="card border-primary mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0">Application Status</h6>
+                            <small class="opacity-75">Ref: ${app.reference_number}</small>
+                        </div>
+                        <span class="badge ${this.getStatusBadgeClass(app.status)} fs-6">
+                            ${this.getStatusDisplayName(app.status)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Application Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Application Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-person-fill text-muted me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Name</small>
+                                    <strong>${app.full_name}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-telephone text-muted me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Phone</small>
+                                    <strong>${app.phone}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-gift text-muted me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Package</small>
+                                    <strong>${this.getPackageName(app.selected_package)}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-calendar text-muted me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Submitted</small>
+                                    <strong>${app.submitted_date}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            ${pickup && app.status === 'APPROVED' ? `
+                <!-- Pickup Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-qr-code me-2"></i>Pickup Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-${pickup.is_expired ? 'danger' : 'success'} mb-3">
+                            <i class="bi bi-${pickup.is_expired ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+                            <strong>Status:</strong> ${pickup.is_expired ? 'Pickup Expired' : 'Ready for Pickup'}
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-upc text-muted me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Pickup Code</small>
+                                        <code class="fw-bold">${pickup.pickup_code}</code>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calendar-date text-muted me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Pickup Date</small>
+                                        <strong>${pickup.scheduled_date}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-clock text-muted me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Time Slot</small>
+                                        <strong>${this.getTimeSlotName(pickup.scheduled_time)}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- QR Code Display -->
+                        <hr>
+                        <div class="text-center">
+                            <h6>Your QR Code</h6>
+                            <div class="bg-light p-3 rounded mb-3 d-inline-block">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${pickup.pickup_code}" 
+                                     alt="QR Code for ${pickup.pickup_code}" class="img-fluid">
+                            </div>
+                            <p class="small text-muted">
+                                Present this QR code during pickup
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ` : app.status === 'PENDING' ? `
+                <!-- Waiting for Approval -->
+                <div class="card mb-4">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-clock-history display-4 text-warning mb-3"></i>
+                        <h6>Application Under Review</h6>
+                        <p class="text-muted">
+                            Your application is being reviewed by our care team. 
+                            This typically takes 1-2 business days.
+                        </p>
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <small>You'll receive pickup details and QR code once approved.</small>
+                        </div>
+                    </div>
+                </div>
+            ` : app.status === 'REJECTED' ? `
+                <!-- Application Rejected -->
+                <div class="card mb-4 border-danger">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-x-circle display-4 text-danger mb-3"></i>
+                        <h6 class="text-danger">Application Rejected</h6>
+                        <p class="text-muted">
+                            Unfortunately, your application was not approved at this time.
+                        </p>
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <small>You can submit a new application immediately if needed.</small>
+                        </div>
+                    </div>
+                </div>
+            ` : `
+                <!-- Package Collected -->
+                <div class="card mb-4 border-success">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-check2-all display-4 text-success mb-3"></i>
+                        <h6 class="text-success">Package Collected</h6>
+                        <p class="text-muted">
+                            You have successfully collected your relief package. 
+                            Thank you for using our community support program.
+                        </p>
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <small>You can apply again after ${result.restriction_info ? result.restriction_info.restriction_days : 21} days.</small>
+                        </div>
+                    </div>
+                </div>
+            `}
+            
+            ${this.getActionButtons(app.status, result.can_apply, result.restriction_info)}
+        `;
+        
+        // Clear and set content with protection against race conditions
+        console.log('Setting resultDiv innerHTML to:', statusHtml.substring(0, 100) + '...');
+        
+        // Force clear any existing content
+        this.resultDiv.innerHTML = '';
+        
+        // Set new content after a small delay to avoid race conditions
+        setTimeout(() => {
+            this.resultDiv.innerHTML = statusHtml;
+            console.log('Content set after delay');
+            
+            // Mark this div to prevent overwrites
+            this.resultDiv.setAttribute('data-loaded', 'true');
+            this.resultDiv.setAttribute('data-timestamp', new Date().getTime());
+        }, 50);
+        
+        // Additional verification
+        setTimeout(() => {
+            if (!this.resultDiv.getAttribute('data-loaded')) {
+                console.warn('Content was overwritten! Restoring...');
+                this.resultDiv.innerHTML = statusHtml;
+                this.resultDiv.setAttribute('data-loaded', 'true');
+            }
+        }, 200);
+        
+        // On mobile/tablet, scroll to results; on desktop, no need to scroll
+        if (window.innerWidth < 992) {
+            this.resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+    
+    getActionButtons(status, canApply, restrictionInfo) {
+        let buttons = '';
+        
+        if (status === 'APPROVED') {
+            buttons += '<a href="#" class="btn btn-success me-2"><i class="bi bi-qr-code me-2"></i>View QR Code</a>';
+        }
+        
+        if (canApply) {
+            buttons += '<a href="/apply/" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Apply Again</a>';
+        } else if (restrictionInfo) {
+            buttons += `<small class="text-muted">You can apply again in ${restrictionInfo.days_remaining} days</small>`;
+        }
+        
+        return buttons ? `<div class="text-center">${buttons}</div>` : '';
+    }
+    
+    getStatusBadgeClass(status) {
+        const statusClasses = {
+            'PENDING': 'bg-warning text-dark',
+            'APPROVED': 'bg-success',
+            'REJECTED': 'bg-danger',
+            'PICKED_UP': 'bg-primary'
+        };
+        return statusClasses[status] || 'bg-secondary';
+    }
+    
+    getStatusDisplayName(status) {
+        const statusNames = {
+            'PENDING': 'Under Review',
+            'APPROVED': 'Approved - Ready for Pickup',
+            'REJECTED': 'Rejected',
+            'PICKED_UP': 'Package Collected'
+        };
+        return statusNames[status] || status;
+    }
+    
+    getPackageName(packageType) {
+        const packageNames = {
+            'small_basic': 'Small Family Basic',
+            'medium_basic': 'Medium Family Basic',
+            'emergency': 'Emergency Relief',
+            'senior': 'Senior Citizen Special'
+        };
+        return packageNames[packageType] || packageType;
+    }
+    
+    getTimeSlotName(timeSlot) {
+        const timeSlots = {
+            'morning': 'Morning (9:00 AM - 12:00 PM)',
+            'afternoon': 'Afternoon (12:00 PM - 3:00 PM)',
+            'evening': 'Evening (3:00 PM - 6:00 PM)'
+        };
+        return timeSlots[timeSlot] || timeSlot;
+    }
+    
+    showError(message) {
+        const errorHtml = `
+            <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading">Unable to Find Application</h6>
+                <p class="mb-0">${message}</p>
+            </div>
+        `;
+        
+        this.resultDiv.innerHTML = errorHtml;
+        
+        // On mobile/tablet, scroll to results; on desktop, no need to scroll
+        if (window.innerWidth < 992) {
+            this.resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+    
+    getCSRFToken() {
+        const cookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        return cookie ? cookie.split('=')[1] : '';
+    }
+}; // End of StatusChecker class
+
+} // End of duplicate protection
+
+// Initialize when DOM is loaded - with cache busting
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear any cached instances
+    if (window.statusCheckerInstance) {
+        delete window.statusCheckerInstance;
+    }
+    
+    // Create fresh instance
+    window.statusCheckerInstance = new window.StatusChecker();
+    console.log('StatusChecker initialized at:', new Date().toISOString());
+    
+    // Add observer to protect against DOM overwrites
+    const resultDiv = document.getElementById('status-result');
+    if (resultDiv && window.MutationObserver) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    const hasRealData = resultDiv.getAttribute('data-loaded') === 'true';
+                    const currentContent = resultDiv.innerHTML;
+                    
+                    // Check if demo content is being injected
+                    if (hasRealData && (currentContent.includes('Approved - Ready for Pickup') || 
+                                       currentContent.includes('Family Package - Medium') ||
+                                       currentContent.includes('Community Center, Lagos'))) {
+                        console.warn('Demo content detected! Preventing override.');
+                        // Don't restore here to avoid infinite loop
+                        // Just log the issue
+                    }
+                }
+            });
+        });
+        
+        observer.observe(resultDiv, {
+            childList: true,
+            subtree: true,
+            attributes: false
+        });
+        
+        console.log('DOM mutation observer active for status-result');
+    }
 });
 </script>
 {% endblock %}

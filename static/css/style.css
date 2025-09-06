@@ -13,9 +13,10 @@
 
 /* Typography */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Signika Negative', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
     color: var(--text-primary);
     line-height: 1.6;
+    font-weight: 400;
 }
 
 .text-primary {
@@ -362,4 +363,26 @@ body {
 
 .border-gradient {
     border: 3px solid var(--primary-color);
+}
+
+/* Form Validation Styles */
+.form-check.is-invalid {
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+    padding: 8px;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.form-check-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-check.is-invalid .form-check-label {
+    color: #dc3545;
+}
+
+/* Add visual feedback for required radio button groups */
+.form-check-input[type="radio"]:required:invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }

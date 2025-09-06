@@ -26,25 +26,25 @@
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="text-center">
-            <div class="h4 text-primary mb-1">67</div>
+            <div class="h4 text-primary mb-1" id="stat-total-week">---</div>
             <small class="text-muted">Total Pickups This Week</small>
         </div>
     </div>
     <div class="col-md-3">
         <div class="text-center">
-            <div class="h4 text-success mb-1">45</div>
+            <div class="h4 text-success mb-1" id="stat-completed">---</div>
             <small class="text-muted">Completed</small>
         </div>
     </div>
     <div class="col-md-3">
         <div class="text-center">
-            <div class="h4 text-warning mb-1">15</div>
+            <div class="h4 text-warning mb-1" id="stat-today">---</div>
             <small class="text-muted">Scheduled Today</small>
         </div>
     </div>
     <div class="col-md-3">
         <div class="text-center">
-            <div class="h4 text-info mb-1">7</div>
+            <div class="h4 text-info mb-1" id="stat-pending">---</div>
             <small class="text-muted">Pending</small>
         </div>
     </div>
@@ -56,7 +56,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Weekly Schedule - August 26 - September 1, 2024</h6>
+                    <h6 class="mb-0" id="weeklyScheduleTitle">Weekly Schedule - Loading...</h6>
                     <div class="btn-group btn-group-sm">
                         <input type="radio" class="btn-check" name="viewType" id="weekView" autocomplete="off" checked>
                         <label class="btn btn-outline-primary" for="weekView">Week</label>
@@ -68,162 +68,9 @@
             </div>
             <div class="card-body p-0">
                 <div class="row g-0" id="weeklySchedule">
-                    <!-- Monday -->
-                    <div class="col">
-                        <div class="calendar-day">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Mon</div>
-                                <div class="text-muted small">26</div>
-                            </div>
-                            
-                            <div class="pickup-slot morning">
-                                <small class="fw-bold">9AM-12PM</small>
-                                <div class="small mt-1">
-                                    <div>• John Doe</div>
-                                    <div>• Mary Smith</div>
-                                    <div class="text-muted">+2 more</div>
-                                </div>
-                            </div>
-                            
-                            <div class="pickup-slot afternoon">
-                                <small class="fw-bold">2PM-5PM</small>
-                                <div class="small mt-1">
-                                    <div>• Peter Jones</div>
-                                    <div class="text-muted">+1 more</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tuesday -->
-                    <div class="col">
-                        <div class="calendar-day">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Tue</div>
-                                <div class="text-muted small">27</div>
-                            </div>
-                            
-                            <div class="pickup-slot morning">
-                                <small class="fw-bold">9AM-12PM</small>
-                                <div class="small mt-1">
-                                    <div>• Sarah Wilson</div>
-                                    <div>• David Brown</div>
-                                    <div class="text-muted">+3 more</div>
-                                </div>
-                            </div>
-                            
-                            <div class="pickup-slot evening">
-                                <small class="fw-bold">5PM-7PM</small>
-                                <div class="small mt-1">
-                                    <div>• Lisa Davis</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Wednesday -->
-                    <div class="col">
-                        <div class="calendar-day">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Wed</div>
-                                <div class="text-muted small">28</div>
-                            </div>
-                            
-                            <div class="pickup-slot morning">
-                                <small class="fw-bold">9AM-12PM</small>
-                                <div class="small mt-1">
-                                    <div>• Michael Johnson</div>
-                                    <div>• Grace Adams</div>
-                                </div>
-                            </div>
-                            
-                            <div class="pickup-slot afternoon">
-                                <small class="fw-bold">2PM-5PM</small>
-                                <div class="small mt-1">
-                                    <div>• Robert Taylor</div>
-                                    <div>• James Miller</div>
-                                    <div class="text-muted">+4 more</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Thursday -->
-                    <div class="col">
-                        <div class="calendar-day">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Thu</div>
-                                <div class="text-muted small">29</div>
-                            </div>
-                            
-                            <div class="pickup-slot afternoon">
-                                <small class="fw-bold">2PM-5PM</small>
-                                <div class="small mt-1">
-                                    <div>• Anna White</div>
-                                    <div>• Tom Green</div>
-                                    <div class="text-muted">+1 more</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Friday -->
-                    <div class="col">
-                        <div class="calendar-day today">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Fri <span class="badge bg-primary">Today</span></div>
-                                <div class="text-muted small">30</div>
-                            </div>
-                            
-                            <div class="pickup-slot morning">
-                                <small class="fw-bold">9AM-12PM</small>
-                                <div class="small mt-1">
-                                    <div>• Carol Johnson</div>
-                                    <div>• Mark Wilson</div>
-                                    <div class="text-muted">+3 more</div>
-                                </div>
-                            </div>
-                            
-                            <div class="pickup-slot afternoon">
-                                <small class="fw-bold">2PM-5PM</small>
-                                <div class="small mt-1">
-                                    <div>• Helen Brown</div>
-                                    <div>• Paul Davis</div>
-                                    <div class="text-muted">+6 more</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Saturday -->
-                    <div class="col">
-                        <div class="calendar-day has-pickups">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Sat</div>
-                                <div class="text-muted small">31</div>
-                            </div>
-                            
-                            <div class="pickup-slot morning">
-                                <small class="fw-bold">10AM-1PM</small>
-                                <div class="small mt-1">
-                                    <div>• Weekend Special</div>
-                                    <div class="text-muted">+8 pickups</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Sunday -->
-                    <div class="col">
-                        <div class="calendar-day">
-                            <div class="fw-bold mb-2 text-center">
-                                <div>Sun</div>
-                                <div class="text-muted small">1</div>
-                            </div>
-                            <div class="text-center text-muted small">
-                                No pickups scheduled
-                            </div>
-                        </div>
+                    <div class="col-12 text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">Loading schedule data...</p>
                     </div>
                 </div>
             </div>
@@ -237,7 +84,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Today's Pickup Details - Friday, August 30</h6>
+                    <h6 class="mb-0" id="todayScheduleTitle">Today's Pickup Details - Loading...</h6>
                     <button class="btn btn-sm btn-primary" onclick="window.location.href='{% url 'supervisor_scanner' %}'">
                         <i class="bi bi-qr-code-scan me-1"></i>Start Scanner
                     </button>
@@ -257,106 +104,11 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="todayScheduleBody">
                             <tr>
-                                <td>9:00 AM</td>
-                                <td>Carol Johnson</td>
-                                <td>REF-240830048</td>
-                                <td>Medium Family Basic</td>
-                                <td>08012345678</td>
-                                <td><span class="badge bg-success">Ready</span></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" onclick="callApplicant('08012345678')">
-                                            <i class="bi bi-telephone"></i>
-                                        </button>
-                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830048')">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>9:30 AM</td>
-                                <td>Mark Wilson</td>
-                                <td>REF-240830049</td>
-                                <td>Large Family Basic</td>
-                                <td>08087654321</td>
-                                <td><span class="badge bg-warning text-dark">Waiting</span></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" onclick="callApplicant('08087654321')">
-                                            <i class="bi bi-telephone"></i>
-                                        </button>
-                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830049')">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>10:00 AM</td>
-                                <td>Sarah Williams</td>
-                                <td>REF-240830050</td>
-                                <td>Senior Citizen Special</td>
-                                <td>08054321876</td>
-                                <td><span class="badge bg-success">Ready</span></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" onclick="callApplicant('08054321876')">
-                                            <i class="bi bi-telephone"></i>
-                                        </button>
-                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830050')">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="table-success">
-                                <td>10:30 AM</td>
-                                <td>David Brown</td>
-                                <td>REF-240830051</td>
-                                <td>Emergency Relief</td>
-                                <td>08076543210</td>
-                                <td><span class="badge bg-success">Collected</span></td>
-                                <td>
-                                    <small class="text-muted">✓ Completed at 10:45 AM</small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2:00 PM</td>
-                                <td>Helen Brown</td>
-                                <td>REF-240830052</td>
-                                <td>Small Family Basic</td>
-                                <td>08098765432</td>
-                                <td><span class="badge bg-info">Scheduled</span></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" onclick="callApplicant('08098765432')">
-                                            <i class="bi bi-telephone"></i>
-                                        </button>
-                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830052')">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2:30 PM</td>
-                                <td>Paul Davis</td>
-                                <td>REF-240830053</td>
-                                <td>Medium Family Premium</td>
-                                <td>08032165487</td>
-                                <td><span class="badge bg-info">Scheduled</span></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" onclick="callApplicant('08032165487')">
-                                            <i class="bi bi-telephone"></i>
-                                        </button>
-                                        <button class="btn btn-outline-info" onclick="viewDetails('REF-240830053')">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p class="mt-2 text-muted">Loading today's schedule...</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -411,19 +163,19 @@
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-6 mb-3">
-                        <div class="h5 text-primary mb-1">89%</div>
+                        <div class="h5 text-primary mb-1" id="quick-ontime-rate">---</div>
                         <small class="text-muted">On-time Pickup Rate</small>
                     </div>
                     <div class="col-6 mb-3">
-                        <div class="h5 text-success mb-1">6.5</div>
+                        <div class="h5 text-success mb-1" id="quick-avg-pickups">---</div>
                         <small class="text-muted">Avg. Pickups/Day</small>
                     </div>
                     <div class="col-6">
-                        <div class="h5 text-info mb-1">12 min</div>
+                        <div class="h5 text-info mb-1" id="quick-processing-time">---</div>
                         <small class="text-muted">Avg. Processing Time</small>
                     </div>
                     <div class="col-6">
-                        <div class="h5 text-warning mb-1">3%</div>
+                        <div class="h5 text-warning mb-1" id="quick-noshow-rate">---</div>
                         <small class="text-muted">No-show Rate</small>
                     </div>
                 </div>
@@ -435,23 +187,398 @@
 
 {% block extra_js %}
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadScheduleData();
+});
+
+let currentScheduleData = [];
+
+async function loadScheduleData() {
+    try {
+        console.log('Loading schedule data from API...');
+        const response = await fetch('/api/applications/list/', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API returned ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('API response received:', data);
+        
+        // Handle different response structures
+        let applications = [];
+        if (Array.isArray(data)) {
+            applications = data;
+        } else if (data.results && Array.isArray(data.results)) {
+            // Paginated response
+            applications = data.results;
+        } else if (data.applications && Array.isArray(data.applications)) {
+            applications = data.applications;
+        } else {
+            console.warn('Unexpected API response structure:', data);
+            showNotification('No application data available', 'warning');
+            return;
+        }
+        
+        currentScheduleData = applications.filter(app => app.status === 'APPROVED');
+        console.log(`Loaded ${applications.length} total applications, ${currentScheduleData.length} approved`);
+        
+        updateScheduleDisplay();
+        updateScheduleStats();
+        
+        if (applications.length > 0) {
+            showNotification(`Loaded ${applications.length} applications from database`, 'success');
+        }
+    } catch (error) {
+        console.error('Error loading schedule:', error);
+        showNotification(`Error loading schedule data: ${error.message}. Using static display.`, 'warning');
+        // Set empty data to show fallback message
+        currentScheduleData = [];
+        updateScheduleDisplay();
+        updateScheduleStats();
+    }
+}
+
+function updateScheduleDisplay() {
+    updateWeeklyCalendar();
+    updateTodaySchedule();
+}
+
+function updateScheduleStats() {
+    const today = new Date().toISOString().split('T')[0];
+    const thisWeekStart = getWeekStart(new Date());
+    const thisWeekEnd = new Date(thisWeekStart);
+    thisWeekEnd.setDate(thisWeekEnd.getDate() + 6);
+    
+    // Calculate statistics
+    const totalThisWeek = currentScheduleData.filter(app => {
+        const appDate = new Date(app.preferred_date);
+        return appDate >= thisWeekStart && appDate <= thisWeekEnd;
+    }).length;
+    
+    const completedThisWeek = currentScheduleData.filter(app => {
+        const appDate = new Date(app.preferred_date);
+        return appDate >= thisWeekStart && appDate <= thisWeekEnd && app.status === 'PICKED_UP';
+    }).length;
+    
+    const scheduledToday = currentScheduleData.filter(app => app.preferred_date === today).length;
+    const pending = currentScheduleData.filter(app => app.status === 'APPROVED').length;
+    
+    // Update DOM elements using specific IDs
+    updateStatElement('#stat-total-week', totalThisWeek);
+    updateStatElement('#stat-completed', completedThisWeek);
+    updateStatElement('#stat-today', scheduledToday);
+    updateStatElement('#stat-pending', pending);
+    
+    // Calculate and update quick statistics
+    updateQuickStatistics();
+}
+
+function updateStatElement(selector, value) {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function updateQuickStatistics() {
+    const totalPickups = currentScheduleData.filter(app => app.status === 'PICKED_UP').length;
+    const approvedPickups = currentScheduleData.filter(app => app.status === 'APPROVED' || app.status === 'PICKED_UP').length;
+    
+    // Calculate on-time pickup rate (simplified - assuming PICKED_UP = on-time)
+    const onTimeRate = approvedPickups > 0 ? Math.round((totalPickups / approvedPickups) * 100) : 0;
+    
+    // Calculate average pickups per day (based on last 7 days)
+    const last7Days = 7;
+    const avgPickupsPerDay = totalPickups > 0 ? (totalPickups / last7Days).toFixed(1) : '0.0';
+    
+    // Average processing time (simplified - assuming 2-3 days average)
+    const avgProcessingTime = currentScheduleData.length > 0 ? '2.5 days' : 'N/A';
+    
+    // No-show rate (simplified - applications that weren't picked up after approval)
+    const noShowCount = currentScheduleData.filter(app => 
+        app.status === 'APPROVED' && 
+        new Date(app.preferred_date) < new Date() // Past due date
+    ).length;
+    const noShowRate = approvedPickups > 0 ? Math.round((noShowCount / approvedPickups) * 100) : 0;
+    
+    // Update the UI
+    updateStatElement('#quick-ontime-rate', onTimeRate + '%');
+    updateStatElement('#quick-avg-pickups', avgPickupsPerDay);
+    updateStatElement('#quick-processing-time', avgProcessingTime);
+    updateStatElement('#quick-noshow-rate', noShowRate + '%');
+}
+
+function getWeekStart(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+    return new Date(d.setDate(diff));
+}
+
+function updateWeeklyCalendar() {
+    console.log('Updating weekly calendar with', currentScheduleData.length, 'approved applications');
+    
+    const weeklyContainer = document.getElementById('weeklySchedule');
+    const titleElement = document.getElementById('weeklyScheduleTitle');
+    if (!weeklyContainer) return;
+    
+    // Get current week dates
+    const currentWeek = getCurrentWeekDates();
+    
+    // Update the title with current week dates
+    if (titleElement) {
+        const startDate = currentWeek.start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+        const endDate = currentWeek.end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        titleElement.textContent = `Weekly Schedule - ${startDate} - ${endDate}`;
+    }
+    
+    // Group applications by date
+    const applicationsByDate = {};
+    currentScheduleData.forEach(app => {
+        const date = app.preferred_date || app.created_at.split('T')[0];
+        if (!applicationsByDate[date]) {
+            applicationsByDate[date] = [];
+        }
+        applicationsByDate[date].push(app);
+    });
+    
+    // Generate calendar HTML
+    const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    
+    let calendarHTML = '';
+    
+    // Calendar header
+    calendarHTML += `
+        <div class="row border-bottom">
+            ${weekDays.map((day, index) => {
+                const date = new Date(currentWeek.start);
+                date.setDate(date.getDate() + index);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayNumber = date.getDate();
+                const isToday = dateStr === new Date().toISOString().split('T')[0];
+                const dayApplications = applicationsByDate[dateStr] || [];
+                
+                return `
+                    <div class="col border-end">
+                        <div class="text-center p-3">
+                            <h6 class="mb-1 ${isToday ? 'text-primary' : ''}">${day}</h6>
+                            <div class="h5 mb-2 ${isToday ? 'text-primary' : 'text-muted'}">${dayNumber}</div>
+                            <div class="small">
+                                <span class="badge ${dayApplications.length > 0 ? 'bg-success' : 'bg-light text-dark'}">${dayApplications.length} pickup${dayApplications.length !== 1 ? 's' : ''}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+    
+    // Applications for each day
+    calendarHTML += `
+        <div class="row">
+            ${weekDays.map((day, index) => {
+                const date = new Date(currentWeek.start);
+                date.setDate(date.getDate() + index);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayApplications = applicationsByDate[dateStr] || [];
+                
+                let dayContent = '';
+                if (dayApplications.length > 0) {
+                    dayContent = dayApplications.slice(0, 3).map(app => `
+                        <div class="small mb-1 p-1 bg-light rounded">
+                            <div class="fw-bold">${formatTime(app.preferred_time)}</div>
+                            <div>${app.first_name} ${app.last_name}</div>
+                            <div class="text-muted">${getPackageName(app.selected_package)}</div>
+                        </div>
+                    `).join('');
+                    
+                    if (dayApplications.length > 3) {
+                        dayContent += `<div class="small text-muted text-center">+${dayApplications.length - 3} more...</div>`;
+                    }
+                } else {
+                    dayContent = '<div class="text-center text-muted small py-3">No pickups</div>';
+                }
+                
+                return `
+                    <div class="col border-end" style="min-height: 120px;">
+                        <div class="p-2">
+                            ${dayContent}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+    
+    weeklyContainer.innerHTML = calendarHTML;
+}
+
+// Helper function to get current week start and end dates
+function getCurrentWeekDates() {
+    const today = new Date();
+    const currentDay = today.getDay();
+    const monday = new Date(today);
+    
+    // Get Monday of current week (day 1)
+    const daysFromMonday = currentDay === 0 ? 6 : currentDay - 1;
+    monday.setDate(today.getDate() - daysFromMonday);
+    
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    
+    return {
+        start: monday,
+        end: sunday
+    };
+}
+
+// Helper function to get package name
+function getPackageName(packageType) {
+    const packageNames = {
+        'small_basic': 'Small Family',
+        'medium_basic': 'Medium Family', 
+        'large_basic': 'Large Family',
+        'emergency': 'Emergency',
+        'senior': 'Senior Citizen'
+    };
+    return packageNames[packageType] || packageType;
+}
+
+function updateTodaySchedule() {
+    const today = new Date().toISOString().split('T')[0];
+    const todaySchedule = currentScheduleData.filter(app => app.preferred_date === today);
+    
+    // Update today's title
+    const todayTitleElement = document.getElementById('todayScheduleTitle');
+    if (todayTitleElement) {
+        const todayFormatted = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        todayTitleElement.textContent = `Today's Pickup Details - ${todayFormatted}`;
+    }
+    
+    const tbody = document.getElementById('todayScheduleBody');
+    if (!tbody) return;
+    
+    if (todaySchedule.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    No pickups scheduled for today
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = todaySchedule.map(app => `
+        <tr class="${app.status === 'PICKED_UP' ? 'table-success' : ''}">
+            <td>${formatTime(app.preferred_time)}</td>
+            <td>${app.first_name} ${app.last_name}</td>
+            <td>${app.reference_number}</td>
+            <td>${app.selected_package}</td>
+            <td>${app.phone}</td>
+            <td>
+                <span class="badge ${getStatusBadgeClass(app.status)}">
+                    ${getStatusText(app.status)}
+                </span>
+            </td>
+            <td>
+                ${app.status === 'PICKED_UP' 
+                    ? '<small class="text-muted">✓ Completed</small>'
+                    : `<div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary" onclick="callApplicant('${app.phone}')">
+                            <i class="bi bi-telephone"></i>
+                        </button>
+                        <button class="btn btn-outline-info" onclick="viewDetails('${app.reference_number}')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>`
+                }
+            </td>
+        </tr>
+    `).join('');
+}
+
+function formatTime(timeStr) {
+    // Convert 24h format to 12h format if needed
+    if (timeStr && timeStr.includes(':')) {
+        const [hour, minute] = timeStr.split(':');
+        const h = parseInt(hour);
+        const period = h >= 12 ? 'PM' : 'AM';
+        const displayHour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+        return `${displayHour}:${minute} ${period}`;
+    }
+    return timeStr || 'Not specified';
+}
+
+function getStatusBadgeClass(status) {
+    switch (status) {
+        case 'APPROVED': return 'bg-success';
+        case 'PENDING': return 'bg-warning text-dark';
+        case 'PICKED_UP': return 'bg-success';
+        default: return 'bg-secondary';
+    }
+}
+
+function getStatusText(status) {
+    switch (status) {
+        case 'APPROVED': return 'Ready';
+        case 'PENDING': return 'Waiting';
+        case 'PICKED_UP': return 'Collected';
+        default: return status;
+    }
+}
+
 function callApplicant(phoneNumber) {
     if (confirm(`Call ${phoneNumber}?`)) {
         window.location.href = `tel:${phoneNumber}`;
     }
 }
 
-function viewDetails(reference) {
-    showNotification(`Viewing details for ${reference}`, 'info');
-    // In real implementation, this would open a modal with full applicant details
+async function viewDetails(reference) {
+    try {
+        // Find the application by reference number
+        const app = currentScheduleData.find(a => a.reference_number === reference);
+        if (!app) {
+            showNotification('Application details not found', 'warning');
+            return;
+        }
+        
+        // Show application details in an alert for now
+        // In a real implementation, this would open a modal
+        const details = `
+Application Details:
+Reference: ${app.reference_number}
+Name: ${app.first_name} ${app.last_name}
+Phone: ${app.phone}
+Package: ${app.selected_package}
+Family Size: ${app.family_size}
+Address: ${app.address}
+Preferred Date: ${app.preferred_date}
+Preferred Time: ${app.preferred_time}
+Status: ${app.status}
+        `;
+        alert(details);
+    } catch (error) {
+        console.error('Error viewing details:', error);
+        showNotification('Error loading application details', 'danger');
+    }
 }
 
 function previousWeek() {
-    showNotification('Loading previous week...', 'info');
+    showNotification('Previous week navigation coming soon!', 'info');
 }
 
 function nextWeek() {
-    showNotification('Loading next week...', 'info');
+    showNotification('Next week navigation coming soon!', 'info');
 }
 
 function saveScheduleSettings() {

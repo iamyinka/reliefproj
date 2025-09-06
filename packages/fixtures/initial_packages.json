@@ -1,0 +1,181 @@
+[
+  {
+    "model": "packages.package",
+    "pk": 1,
+    "fields": {
+      "name": "Small Family Basic",
+      "package_type": "small_basic",
+      "description": "Essential relief package for small families of 1-3 members, providing basic food items and cash support for 2-3 weeks.",
+      "cash_amount": "5000.00",
+      "items_included": {
+        "rice": "5kg Rice",
+        "beans": "2kg Beans", 
+        "vegetable_oil": "1L Vegetable Oil",
+        "salt": "1kg Salt"
+      },
+      "total_quantity": 50,
+      "available_quantity": 45,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 2,
+    "fields": {
+      "name": "Small Family Premium",
+      "package_type": "small_premium",
+      "description": "Enhanced relief package for small families with additional items and higher cash support for 3-4 weeks.",
+      "cash_amount": "7500.00",
+      "items_included": {
+        "rice": "5kg Rice",
+        "beans": "3kg Beans",
+        "vegetable_oil": "1.5L Vegetable Oil",
+        "salt": "1kg Salt",
+        "sugar": "1kg Sugar",
+        "garri": "500g Garri"
+      },
+      "total_quantity": 30,
+      "available_quantity": 25,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 3,
+    "fields": {
+      "name": "Medium Family Basic",
+      "package_type": "medium_basic",
+      "description": "Essential relief package for medium-sized families of 4-6 members, providing adequate food and cash support for 2-3 weeks.",
+      "cash_amount": "8000.00",
+      "items_included": {
+        "rice": "10kg Rice",
+        "beans": "5kg Beans",
+        "vegetable_oil": "2L Vegetable Oil",
+        "salt": "1kg Salt",
+        "sugar": "1kg Sugar"
+      },
+      "total_quantity": 40,
+      "available_quantity": 35,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 4,
+    "fields": {
+      "name": "Medium Family Premium",
+      "package_type": "medium_premium",
+      "description": "Comprehensive relief package for medium families with extended food variety and higher cash support for 3-4 weeks.",
+      "cash_amount": "12000.00",
+      "items_included": {
+        "rice": "15kg Rice",
+        "beans": "8kg Beans",
+        "vegetable_oil": "3L Vegetable Oil",
+        "salt": "2kg Salt",
+        "sugar": "2kg Sugar",
+        "garri": "1kg Garri",
+        "yam_flour": "1kg Yam Flour"
+      },
+      "total_quantity": 20,
+      "available_quantity": 8,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 5,
+    "fields": {
+      "name": "Large Family Basic",
+      "package_type": "large_basic",
+      "description": "Essential relief package for large families of 7+ members, providing substantial food and cash support for 2-3 weeks.",
+      "cash_amount": "15000.00",
+      "items_included": {
+        "rice": "25kg Rice",
+        "beans": "10kg Beans", 
+        "vegetable_oil": "3L Vegetable Oil",
+        "salt": "2kg Salt",
+        "sugar": "2kg Sugar"
+      },
+      "total_quantity": 15,
+      "available_quantity": 5,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 6,
+    "fields": {
+      "name": "Large Family Premium",
+      "package_type": "large_premium",
+      "description": "Premium relief package for large families with extensive food variety and maximum cash support for 4-5 weeks.",
+      "cash_amount": "20000.00",
+      "items_included": {
+        "rice": "50kg Rice",
+        "beans": "15kg Beans",
+        "vegetable_oil": "5L Vegetable Oil",
+        "salt": "3kg Salt",
+        "sugar": "3kg Sugar",
+        "garri": "2kg Garri",
+        "yam_flour": "2kg Yam Flour"
+      },
+      "total_quantity": 10,
+      "available_quantity": 0,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 7,
+    "fields": {
+      "name": "Emergency Relief",
+      "package_type": "emergency",
+      "description": "Fast-tracked relief package for urgent situations, providing immediate food and cash support with priority processing.",
+      "cash_amount": "10000.00",
+      "items_included": {
+        "rice": "10kg Rice",
+        "beans": "5kg Beans",
+        "vegetable_oil": "2L Vegetable Oil",
+        "seasonings": "Basic Seasonings Pack"
+      },
+      "total_quantity": 25,
+      "available_quantity": 20,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "packages.package",
+    "pk": 8,
+    "fields": {
+      "name": "Senior Citizen Special",
+      "package_type": "senior",
+      "description": "Specially curated package for elderly members (60+) with easy-to-prepare foods and delivery service included.",
+      "cash_amount": "6000.00",
+      "items_included": {
+        "rice": "5kg Easy-Cook Rice",
+        "beans": "2kg Beans",
+        "vegetable_oil": "1L Vegetable Oil",
+        "oats": "1kg Oats",
+        "honey": "500g Honey"
+      },
+      "total_quantity": 20,
+      "available_quantity": 18,
+      "is_active": true,
+      "created_at": "2024-09-01T00:00:00Z",
+      "updated_at": "2024-09-01T00:00:00Z"
+    }
+  }
+]

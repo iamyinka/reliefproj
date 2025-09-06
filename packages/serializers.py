@@ -23,6 +23,11 @@ class PackageSerializer(serializers.ModelSerializer):
 
 class PackageListSerializer(serializers.ModelSerializer):
     """Simplified serializer for package selection in forms"""
+    package_items = PackageItemSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Package
-        fields = ['package_type', 'name', 'description', 'cash_amount', 'is_available']
+        fields = [
+            'package_type', 'name', 'description', 'cash_amount', 
+            'is_available', 'items_included', 'package_items'
+        ]

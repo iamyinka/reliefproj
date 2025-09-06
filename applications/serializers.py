@@ -8,7 +8,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'reference_number', 'first_name', 'last_name', 'phone', 'email', 'address',
             'family_size', 'children_count', 'elderly_count', 'employment_status', 
-            'special_needs', 'situation_description', 'selected_package', 'package_flexibility',
+            'special_needs', 'tec_member', 'selected_package', 'package_flexibility',
             'preferred_date', 'preferred_time', 'alternative_date', 'alternative_time',
             'transportation_help', 'delivery_request', 'terms_agreement', 'status', 'created_at'
         ]
@@ -22,7 +22,7 @@ class ApplicationSubmissionSerializer(serializers.ModelSerializer):
         fields = [
             'first_name', 'last_name', 'phone', 'email', 'address',
             'family_size', 'children_count', 'elderly_count', 'employment_status', 
-            'special_needs', 'situation_description', 'selected_package', 'package_flexibility',
+            'special_needs', 'tec_member', 'selected_package', 'package_flexibility',
             'preferred_date', 'preferred_time', 'alternative_date', 'alternative_time',
             'transportation_help', 'delivery_request', 'terms_agreement'
         ]
@@ -37,6 +37,11 @@ class ApplicationSubmissionSerializer(serializers.ModelSerializer):
         import re
         if not re.match(r'^(\+?234|0)[789][01]\d{8}$', value):
             raise serializers.ValidationError("Enter a valid Nigerian phone number.")
+        return value
+    
+    def validate_tec_member(self, value):
+        if value not in ['yes', 'no']:
+            raise serializers.ValidationError("Please select your TEC membership status.")
         return value
 
 

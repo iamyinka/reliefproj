@@ -79,12 +79,38 @@ class MultiStepForm {
         const requiredFields = currentStepElement.querySelectorAll('[required]');
         let isValid = true;
         
+        // Track radio button groups to avoid duplicate validation
+        const radioGroups = new Set();
+        
         requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.classList.add('is-invalid');
+            if (field.type === 'radio') {
+                // Handle radio button groups
+                if (!radioGroups.has(field.name)) {
+                    radioGroups.add(field.name);
+                    const radioGroup = currentStepElement.querySelectorAll(`input[name="${field.name}"]`);
+                    const isRadioGroupValid = Array.from(radioGroup).some(radio => radio.checked);
+                    
+                    radioGroup.forEach(radio => {
+                        if (isRadioGroupValid) {
+                            radio.classList.remove('is-invalid');
+                            // Remove invalid class from parent as well
+                            radio.closest('.form-check')?.classList.remove('is-invalid');
+                        } else {
+                            radio.classList.add('is-invalid');
+                            // Add invalid class to parent for visual feedback
+                            radio.closest('.form-check')?.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    });
+                }
             } else {
-                field.classList.remove('is-invalid');
+                // Handle other field types
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
             }
         });
         
@@ -199,15 +225,16 @@ class PackageFilter {
     }
 }
 
-// Status checking functionality
-class StatusChecker {
+// Status checking functionality - DISABLED (replaced by page-specific implementation)
+class StatusCheckerOld {
     constructor() {
         this.statusForm = document.querySelector('#status-form');
         this.statusResult = document.querySelector('#status-result');
         
-        if (this.statusForm && this.statusResult) {
-            this.init();
-        }
+        // Disabled to prevent conflicts with new implementation
+        // if (this.statusForm && this.statusResult) {
+        //     this.init();
+        // }
     }
     
     init() {
@@ -232,17 +259,8 @@ class StatusChecker {
             </div>
         `;
         
-        // Simulate API call (replace with actual API call)
-        setTimeout(() => {
-            this.displayStatus({
-                status: 'approved',
-                package: 'Family Package - Medium',
-                pickup_date: '2024-09-15',
-                pickup_time: '10:00 AM',
-                pickup_location: 'Community Center, Lagos',
-                qr_code: 'QR123456789'
-            });
-        }, 1500);
+        // This would be replaced with an actual API call to check status
+        // For now, this is handled by the status.html template
     }
     
     displayStatus(data) {
@@ -319,7 +337,12 @@ function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const href = this.getAttribute('href');
+            // Skip if href is just "#" or empty
+            if (!href || href === '#' || href.length <= 1) {
+                return;
+            }
+            const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({
                     behavior: 'smooth',
@@ -338,8 +361,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize package filter
     new PackageFilter();
     
-    // Initialize status checker
-    new StatusChecker();
+    // Initialize status checker - DISABLED (page-specific implementation used instead)
+    // new StatusChecker();
     
     // Initialize smooth scrolling
     initSmoothScrolling();
@@ -373,7 +396,7 @@ function validateEmail(email) {
 window.CommunityRelief = {
     MultiStepForm,
     PackageFilter,
-    StatusChecker,
+    StatusCheckerOld,  // Renamed to avoid conflicts
     validatePhone,
     validateEmail
 };
