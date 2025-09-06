@@ -54,7 +54,7 @@
                     <div class="input-group mb-3">
                         <input type="text" class="form-control form-control-lg" id="manualQRCode" 
                                placeholder="Enter QR code or reference number (e.g., REF-240830001)">
-                        <button class="btn btn-primary btn-lg" onclick="processManualEntry()">
+                        <button class="btn btn-primary btn-lg" id="manualLookupBtn" onclick="if(window.reliefScanner) { window.reliefScanner.processManualEntry(); } else { showNotification('Scanner is still loading, please wait a moment...', 'info'); }">
                             <i class="bi bi-search me-2"></i> Lookup
                         </button>
                     </div>
@@ -71,26 +71,7 @@
     </div>
     
     <div class="col-lg-4">
-        <!-- Today's Pickup Queue -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h6 class="mb-0">Today's Pickup Queue</h6>
-            </div>
-            <div class="card-body" id="todayPickupQueue">
-                <!-- Loading state -->
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2 text-muted">Loading pickup queue...</p>
-                </div>
-            </div>
-                
-                <div class="text-center mt-3">
-                    <a href="{% url 'supervisor_schedule' %}" class="btn btn-sm btn-outline-primary">
-                        View Full Schedule
-                    </a>
-                </div>
-            </div>
-        </div>
+        
         
         <!-- Scanner Statistics -->
         <div class="card">
@@ -805,7 +786,6 @@ class ReliefQRScanner {
         }
         
         this.processScannedCode(qrCode);
-        this.toggleManualEntry(); // Hide the manual entry form
     }
     
     async loadPickupQueue() {
@@ -1189,128 +1169,12 @@ function toggleManualEntry() {
     }
 }
 
-async function processManualEntry() {
-    const inputValue = document.getElementById('manualQRCode').value.trim();
-    if (!inputValue) {
-        showNotification('Please enter a reference number or pickup code', 'warning');
-        return;
-    }
-    
-    // Show loading state
-    const resultDiv = document.getElementById('scanResult');
-    resultDiv.innerHTML = `
-        <div class="text-center py-4">
-            <div class="spinner-border text-primary mb-3" role="status"></div>
-            <h6>Looking up application...</h6>
-            <p class="text-muted">Searching for: ${inputValue}</p>
-        </div>
-    `;
-    
-    try {
-        console.log('Looking up:', inputValue);
-        
-        // First, try to lookup by pickup code using the pickups API
-        if (inputValue.toUpperCase().startsWith('GCR') && inputValue.length > 10) {
-            console.log('Attempting pickup code lookup for:', inputValue);
-            const csrfToken = getCSRFToken();
-            console.log('Using CSRF token:', csrfToken ? 'Found' : 'Missing');
-            
-            const pickupResponse = await fetch('/api/pickups/verify/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify({ pickup_code: inputValue })
-            });
-            
-            console.log('Pickup response status:', pickupResponse.status, pickupResponse.statusText);
-            
-            if (pickupResponse.ok) {
-                const pickupResult = await pickupResponse.json();
-                console.log('Pickup API result:', pickupResult);
-                if (pickupResult.success) {
-                    console.log('Pickup found via pickup code:', pickupResult.data);
-                    await displayPickupDetails(pickupResult.data);
-                    return;
-                }
-            } else {
-                const errorText = await pickupResponse.text();
-                console.error('Pickup API error:', pickupResponse.status, errorText);
-            }
-        }
-        
-        // If pickup code lookup failed or it's not a pickup code, try reference number lookup
-        console.log('Attempting reference number lookup');
-        const response = await fetch('/api/applications/list/', {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`API returned ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        
-        // Handle different response structures
-        let applications = [];
-        if (Array.isArray(data)) {
-            applications = data;
-        } else if (data.results && Array.isArray(data.results)) {
-            applications = data.results;
-        } else if (data.applications && Array.isArray(data.applications)) {
-            applications = data.applications;
-        }
-        
-        // Find the application by reference number
-        const application = applications.find(app => 
-            app.reference_number.toLowerCase() === inputValue.toLowerCase()
-        );
-        
-        if (!application) {
-            resultDiv.innerHTML = `
-                <div class="card border-warning">
-                    <div class="card-header bg-warning text-dark">
-                        <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Application Not Found</h6>
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-search display-4 text-muted"></i>
-                        </div>
-                        <h6>No application found with: ${inputValue}</h6>
-                        <p class="text-muted">Please check the reference number or pickup code and try again.</p>
-                        <button class="btn btn-primary" onclick="clearScanResult()">
-                            Try Again
-                        </button>
-                    </div>
-                </div>
-            `;
-            return;
-        }
-        
-        // Get package details from backend
-        await displayApplicationDetails(application);
-        
-    } catch (error) {
-        console.error('Manual lookup error:', error);
-        resultDiv.innerHTML = `
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h6 class="mb-0"><i class="bi bi-x-circle me-2"></i>Lookup Error</h6>
-                </div>
-                <div class="card-body text-center">
-                    <h6>Unable to lookup application</h6>
-                    <p class="text-muted">Network error. Please try again.</p>
-                    <button class="btn btn-primary" onclick="clearScanResult()">
-                        Try Again
-                    </button>
-                </div>
-            </div>
-        `;
+// Global helper function for backwards compatibility
+function showNotification(message, type = 'info') {
+    if (window.reliefScanner) {
+        window.reliefScanner.showNotification(message, type);
+    } else {
+        console.log(`Notification (${type}):`, message);
     }
 }
 
@@ -1690,7 +1554,130 @@ async function viewScanDetails(reference, pickupCode = null) {
                                     contents.push(`₦${packageInfo.cash_amount.toLocaleString()} Cash`);
                                 }
                                 scanDetails.package_contents = contents.length > 0 ? contents.join(', ') : packageInfo.description || 'Package details not available';
-                            }\n                        }\n                    } catch (err) {\n                        console.error('Error loading package details:', err);\n                    }\n                }\n            }\n        }\n        \n        if (!scanDetails) {\n            content.innerHTML = `\n                <div class=\"text-center py-4\">\n                    <div class=\"mb-3\">\n                        <i class=\"bi bi-exclamation-triangle display-4 text-warning\"></i>\n                    </div>\n                    <h6>Details Not Found</h6>\n                    <p class=\"text-muted\">Unable to load details for reference: ${reference}</p>\n                </div>\n            `;\n            return;\n        }\n        \n        // Format dates and times\n        let completedTime = 'Not completed';\n        let completedBy = 'N/A';\n        \n        if (scanDetails.picked_up_at) {\n            const date = new Date(scanDetails.picked_up_at);\n            completedTime = date.toLocaleString('en-US', {\n                year: 'numeric',\n                month: 'short',\n                day: 'numeric',\n                hour: 'numeric',\n                minute: '2-digit',\n                hour12: true\n            });\n        }\n        \n        if (scanDetails.picked_up_by) {\n            completedBy = scanDetails.picked_up_by;\n        } else if (scanDetails.completed_by) {\n            completedBy = scanDetails.completed_by;\n        }\n        \n        // Display the real scan details\n        content.innerHTML = `\n            <div class=\"row\">\n                <div class=\"col-md-6\">\n                    <h6>Collection Details</h6>\n                    <table class=\"table table-sm\">\n                        <tr><td><strong>Reference:</strong></td><td>${scanDetails.reference_number}</td></tr>\n                        <tr><td><strong>Applicant:</strong></td><td>${scanDetails.applicant_name}</td></tr>\n                        <tr><td><strong>Phone:</strong></td><td>${scanDetails.phone}</td></tr>\n                        <tr><td><strong>Collection Time:</strong></td><td>${completedTime}</td></tr>\n                        <tr><td><strong>Supervisor:</strong></td><td>${completedBy}</td></tr>\n                        ${pickupCode ? `<tr><td><strong>Pickup Code:</strong></td><td><code>${pickupCode}</code></td></tr>` : ''}\n                    </table>\n                </div>\n                <div class=\"col-md-6\">\n                    <h6>Package Details</h6>\n                    <table class=\"table table-sm\">\n                        <tr><td><strong>Package:</strong></td><td>${scanDetails.package_name}</td></tr>\n                        <tr><td><strong>Contents:</strong></td><td>${scanDetails.package_contents}</td></tr>\n                        <tr><td><strong>Status:</strong></td><td>\n                            <span class=\"badge ${getStatusBadgeClass(scanDetails.status)}\">\n                                ${getStatusText(scanDetails.status)}\n                            </span>\n                        </td></tr>\n                    </table>\n                    \n                    <h6>Notes</h6>\n                    <p class=\"small\">${scanDetails.notes || 'No additional notes'}</p>\n                </div>\n            </div>\n        `;\n        \n    } catch (error) {\n        console.error('Error loading scan details:', error);\n        content.innerHTML = `\n            <div class=\"text-center py-4\">\n                <div class=\"mb-3\">\n                    <i class=\"bi bi-exclamation-triangle display-4 text-danger\"></i>\n                </div>\n                <h6>Error Loading Details</h6>\n                <p class=\"text-muted\">Network error. Please try again.</p>\n            </div>\n        `;\n    }\n}\n\nfunction getPackageDisplayName(packageType) {\n    const packageNames = {\n        'small_basic': 'Small Family Basic',\n        'medium_basic': 'Medium Family Basic',\n        'large_basic': 'Large Family Basic',\n        'emergency': 'Emergency Relief',\n        'senior': 'Senior Citizen Special'\n    };\n    return packageNames[packageType] || packageType;\n}\n\nfunction getStatusBadgeClass(status) {\n    switch (status) {\n        case 'COMPLETED':\n        case 'PICKED_UP': return 'bg-success';\n        case 'SCHEDULED': \n        case 'APPROVED': return 'bg-primary';\n        case 'PENDING': return 'bg-warning text-dark';\n        case 'CANCELLED': return 'bg-danger';\n        default: return 'bg-secondary';\n    }\n}\n\nfunction getStatusText(status) {\n    switch (status) {\n        case 'COMPLETED': return 'Completed';\n        case 'PICKED_UP': return 'Collected';\n        case 'SCHEDULED': return 'Scheduled';\n        case 'APPROVED': return 'Ready';\n        case 'PENDING': return 'Pending';\n        case 'CANCELLED': return 'Cancelled';\n        default: return status;\n    }\n}
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Error loading package details:', err);
+                    }
+                }
+            }
+        }
+        
+        if (!scanDetails) {
+            content.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-exclamation-triangle display-4 text-warning"></i>
+                    </div>
+                    <h6>Details Not Found</h6>
+                    <p class="text-muted">Unable to load details for reference: ${reference}</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Format dates and times
+        let completedTime = 'Not completed';
+        let completedBy = 'N/A';
+        
+        if (scanDetails.picked_up_at) {
+            const date = new Date(scanDetails.picked_up_at);
+            completedTime = date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+        
+        if (scanDetails.picked_up_by) {
+            completedBy = scanDetails.picked_up_by;
+        } else if (scanDetails.completed_by) {
+            completedBy = scanDetails.completed_by;
+        }
+        
+        // Display the real scan details
+        content.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Collection Details</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Reference:</strong></td><td>${scanDetails.reference_number}</td></tr>
+                        <tr><td><strong>Applicant:</strong></td><td>${scanDetails.applicant_name}</td></tr>
+                        <tr><td><strong>Phone:</strong></td><td>${scanDetails.phone}</td></tr>
+                        <tr><td><strong>Collection Time:</strong></td><td>${completedTime}</td></tr>
+                        <tr><td><strong>Supervisor:</strong></td><td>${completedBy}</td></tr>
+                        ${pickupCode ? `<tr><td><strong>Pickup Code:</strong></td><td><code>${pickupCode}</code></td></tr>` : ''}
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h6>Package Details</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Package:</strong></td><td>${scanDetails.package_name}</td></tr>
+                        <tr><td><strong>Contents:</strong></td><td>${scanDetails.package_contents}</td></tr>
+                        <tr><td><strong>Status:</strong></td><td>
+                            <span class="badge ${getStatusBadgeClass(scanDetails.status)}">
+                                ${getStatusText(scanDetails.status)}
+                            </span>
+                        </td></tr>
+                    </table>
+                    
+                    <h6>Notes</h6>
+                    <p class="small">${scanDetails.notes || 'No additional notes'}</p>
+                </div>
+            </div>
+        `;
+        
+    } catch (error) {
+        console.error('Error loading scan details:', error);
+        content.innerHTML = `
+            <div class="text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-exclamation-triangle display-4 text-danger"></i>
+                </div>
+                <h6>Error Loading Details</h6>
+                <p class="text-muted">Network error. Please try again.</p>
+            </div>
+        `;
+    }
+}
+
+function getPackageDisplayName(packageType) {
+    const packageNames = {
+        'small_basic': 'Small Family Basic',
+        'medium_basic': 'Medium Family Basic',
+        'large_basic': 'Large Family Basic',
+        'emergency': 'Emergency Relief',
+        'senior': 'Senior Citizen Special'
+    };
+    return packageNames[packageType] || packageType;
+}
+
+function getStatusBadgeClass(status) {
+    switch (status) {
+        case 'COMPLETED':
+        case 'PICKED_UP': return 'bg-success';
+        case 'SCHEDULED': 
+        case 'APPROVED': return 'bg-primary';
+        case 'PENDING': return 'bg-warning text-dark';
+        case 'CANCELLED': return 'bg-danger';
+        default: return 'bg-secondary';
+    }
+}
+
+function getStatusText(status) {
+    switch (status) {
+        case 'COMPLETED': return 'Completed';
+        case 'PICKED_UP': return 'Collected';
+        case 'SCHEDULED': return 'Scheduled';
+        case 'APPROVED': return 'Ready';
+        case 'PENDING': return 'Pending';
+        case 'CANCELLED': return 'Cancelled';
+        default: return status;
+    }
+}
 
 function showScanHistory() {
     const modal = new bootstrap.Modal(document.getElementById('scanHistoryModal'));
@@ -1743,7 +1730,7 @@ document.addEventListener('keydown', function(e) {
     
     // Enter key in manual entry field
     if (e.code === 'Enter' && e.target.id === 'manualQRCode') {
-        processManualEntry();
+        window.reliefScanner.processManualEntry();
     }
     
     // Escape key to cancel manual entry
