@@ -136,9 +136,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
+if DEBUG:
+	STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+else:
+	STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -163,11 +166,16 @@ REST_FRAMEWORK = {
 }
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = [
+if DEBUG:
+	CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:9000",
     "http://127.0.0.1:9000",
+]
+else:
+	CORS_ALLOWED_ORIGINS = [
+	"https://ourgcrelief.com"
 ]
 
 # Celery Configuration
